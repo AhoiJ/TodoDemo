@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">TodoDemo</string>
+
+    <string name="sign_up">Sign Up</string>
+    <string name="log_in">Log In</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
 </resources>
