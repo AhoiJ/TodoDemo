@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         // testing connection to firebase
         val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference("message")
-        myRef.setValue("Hello, World!")
+        myRef.setValue("Haloo, World!")
 
 
         updateUI()
