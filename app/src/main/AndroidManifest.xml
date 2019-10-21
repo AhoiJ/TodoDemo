@@ -10,6 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".AllOpenActivity"></activity>
+        <activity android:name=".AddContactActivity"></activity>
         <activity android:name=".MenuActivity"></activity>
         <activity android:name=".JoinActivity"></activity>
         <activity android:name=".SignInActivity">

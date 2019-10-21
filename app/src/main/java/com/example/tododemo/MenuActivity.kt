@@ -45,6 +45,7 @@ class MenuActivity : AppCompatActivity() {
     }
 
     fun openContacts(){
-
+        val intent = Intent(this, AddContactActivity::class.java)
+        startActivity(intent)
     }
 }

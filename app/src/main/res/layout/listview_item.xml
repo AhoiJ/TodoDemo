@@ -7,6 +7,6 @@
     android:layout_height="fill_parent"
     android:padding="10dip"
     android:textSize="16dip"
-    android:background="@color/colorVibrant"
+    android:background="@drawable/login_border_custom"
     android:textStyle="bold" >
 </TextView>
