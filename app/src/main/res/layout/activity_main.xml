@@ -11,9 +11,25 @@
     android:background="@color/colorPrimaryLight"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="140sp"
+        android:layout_marginLeft="140sp"
+        android:layout_marginTop="20sp"
+        android:text="@string/default_todo_title"
+        android:textAllCaps="true"
+        android:textStyle="bold" />
+
     <ListView
         android:id="@+id/list_todo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvTitle"
+        android:layout_marginTop="22dp" />
 
 </RelativeLayout>

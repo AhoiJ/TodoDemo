@@ -17,6 +17,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.example.tododemo.db.TaskContract
 import com.example.tododemo.db.TaskDbHelper
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 class MainActivity : AppCompatActivity() {
@@ -26,21 +27,24 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mTaskListView: ListView
     private lateinit var mAdapter: ArrayAdapter<String>
 
+    private lateinit var auth: FirebaseAuth
+
+    public override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = auth.currentUser
+      //  updateUI(currentUser) // need to implement UpdateUI that gets user data from firebase
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        auth = FirebaseAuth.getInstance()
         mHelper = TaskDbHelper(this)
         mTaskListView = findViewById(R.id.list_todo)
 
-        // testing connection to firebase
-        val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference("message")
-        myRef.setValue("Haloo, World!")
-
-
-        updateUI()
+        updateTable()
 
     }
 
@@ -56,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         var db = mHelper.writableDatabase
         db.delete(TaskContract.TABLE, TaskContract.COL_TASK_TITLE + " = ?", arrayOf<String>(task))
         db.close()
-        updateUI()
+        updateTable()
     }
 
 
@@ -80,7 +84,7 @@ class MainActivity : AppCompatActivity() {
                                 values,
                                 SQLiteDatabase.CONFLICT_REPLACE)
                             db.close()
-                            updateUI() // may be misplaced
+                            updateTable()
                         }
                     })
                     .setNegativeButton("Cancel", null)
@@ -92,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateUI(){
+    private fun updateTable(){
         var taskList:ArrayList<String> = ArrayList()
         val db = mHelper.getReadableDatabase()
         var cursor = db.query(TaskContract.TABLE,
