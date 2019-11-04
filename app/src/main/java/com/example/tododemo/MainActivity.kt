@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity()  {
                 val createdTitle = etTitle.text.toString()
                 // creates new todo in firebase
                 addTodo(createdTitle, listTodo)
+                finish()
 
             } else
                 Toast.makeText(applicationContext, "Please add Title", Toast.LENGTH_SHORT).show()
@@ -80,11 +81,13 @@ class MainActivity : AppCompatActivity()  {
 
     fun addTodo(createdTitle: String, listTodo: List<String>){
 
+
         val list = ToDoList()
         list.title = createdTitle
         list.tasks = listTodo
         list.done = false
         list.startTime = Timestamp(System.currentTimeMillis()).toString()
+        // gets new key for list
         val key = _db.child("ToDos").push().key
         list.objId = key
         _db.child("ToDos").child(key.toString()).setValue(list)
