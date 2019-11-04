@@ -7,10 +7,11 @@ import android.widget.ListAdapter
 import android.widget.ListView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_all_open.*
 
 class AllOpenActivity : AppCompatActivity() {
 
-    private val toDo: MutableList<ToDoList> = mutableListOf()
+    private var toDo: MutableList<ToDoList> = mutableListOf()
 
     private lateinit var auth: FirebaseAuth
     lateinit var _db: DatabaseReference
@@ -41,8 +42,11 @@ class AllOpenActivity : AppCompatActivity() {
     private fun initToDoList() {
         val todoListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val lista = dataSnapshot.getValue(ToDoList::class.java)
-                updateNakyma(lista)
+                dataSnapshot.children.mapNotNullTo(toDo){
+                    it.getValue<ToDoList>(ToDoList::class.java)
+                }
+                updateNakyma(toDo)
+
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -52,13 +56,32 @@ class AllOpenActivity : AppCompatActivity() {
         _db.child("ToDos").addValueEventListener(todoListener)
     }
 
-    private fun updateNakyma(lista: ToDoList?){
+    private fun updateNakyma(lista: MutableList<ToDoList>){
+       // tvTitle.setText(lista.title)
+        var listaus: List<String?> = mutableListOf()
 
-        val adapter = ListAdapter(this,
-            R.layout.listview_item, lista)
+        var too = ToDoList()
 
+        for (i in 0..lista.lastIndex ){
+            too = lista[i]
+            val titteli: String? = too.title
+
+            listaus += titteli
+        }
+
+
+
+
+        val adapter = ArrayAdapter<String>(this, R.layout.listview_item, listaus)
         val listView: ListView = findViewById(R.id.listview_1)
         listView.setAdapter(adapter)
+
+
+/*
+        val listView: ListView = findViewById(R.id.listview_1)
+        listView.setAdapter(adapter)
+
+         */
     }
 
 }
