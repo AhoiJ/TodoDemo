@@ -10,14 +10,14 @@
 
     <Button
         android:id="@+id/btnAllOpen"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="165dp"
+        android:layout_height="60dp"
         android:layout_marginTop="229dp"
         android:layout_marginEnd="43dp"
         android:layout_marginRight="43dp"
         android:layout_marginBottom="40dp"
-        android:text="All open"
         android:background="@drawable/button"
+        android:text="@string/show_all_open_btn"
         app:layout_constraintBottom_toTopOf="@+id/btnJoin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnCreate"
@@ -25,13 +25,13 @@
 
     <Button
         android:id="@+id/btnJoin"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="165dp"
+        android:layout_height="60dp"
         android:layout_marginEnd="43dp"
         android:layout_marginRight="43dp"
         android:layout_marginBottom="264dp"
-        android:text="Join requests"
         android:background="@drawable/button"
+        android:text="@string/join_requests_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnContacts"
@@ -39,15 +39,15 @@
 
     <Button
         android:id="@+id/btnContacts"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="165dp"
+        android:layout_height="60dp"
         android:layout_marginStart="53dp"
         android:layout_marginLeft="53dp"
         android:layout_marginEnd="29dp"
         android:layout_marginRight="29dp"
         android:layout_marginBottom="264dp"
-        android:text="Contacts"
         android:background="@drawable/button"
+        android:text="@string/contacts_bnt"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnJoin"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,18 +55,44 @@
 
     <Button
         android:id="@+id/btnCreate"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="165dp"
+        android:layout_height="60dp"
         android:layout_marginStart="53dp"
         android:layout_marginLeft="53dp"
         android:layout_marginTop="229dp"
         android:layout_marginEnd="29dp"
         android:layout_marginRight="29dp"
         android:layout_marginBottom="40dp"
-        android:text="Create new"
         android:background="@drawable/button"
+        android:text="@string/new_todo_btn"
         app:layout_constraintBottom_toTopOf="@+id/btnContacts"
         app:layout_constraintEnd_toStartOf="@+id/btnAllOpen"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/user_email"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnLogOut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/logout_btn"
+        android:background="@drawable/button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
