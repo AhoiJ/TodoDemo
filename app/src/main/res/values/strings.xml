@@ -7,15 +7,19 @@
     <string name="email_address">Email Address</string>
     <string name="password">Password</string>
 
-   <!-- Menubuttons -->
+   <!-- Buttons -->
     <string name="new_todo_btn">Create new ToDo</string>
     <string name="show_all_open_btn">Show all open ToDo´s</string>
     <string name="contacts_bnt">Contacts</string>
     <string name="join_requests_btn">Join requests</string>
     <string name="logout_btn">Log Out</string>
+    <string name="publish_btn">Publish</string>
+    <string name="add_todo_btn">Add ToDo</string>
 
     <!-- Miscs -->
     <string name="default_todo_title">Default Title</string>
+    <string name="add_task_btn">Add Task</string>
+    <string name="todo_title_tv">Add Title</string>
 
     <!-- UserInfo -->
     <string name="user_email">Logged in as: </string>

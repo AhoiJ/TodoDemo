@@ -74,6 +74,7 @@ class SignInActivity : AppCompatActivity() {
                 // else if successful show in success in log
                 else
                     Log.d("SignIn", "Successfully created user with uid: ${it.result!!.user!!.uid}")
+
             }
             .addOnFailureListener {
                 Log.d("SignIn", "Failed to create user: ${it.message}")
