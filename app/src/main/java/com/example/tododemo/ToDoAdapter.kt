@@ -8,7 +8,7 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 
 
-class ToDoAdapter(private val context: Context, private val dataSource: ArrayList<ToDoList>): BaseAdapter() {
+class ToDoAdapter(private val context: Context, private val dataSource: List<ToDoList>): BaseAdapter() {
 
     private val inflater: LayoutInflater
             = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -29,14 +29,14 @@ class ToDoAdapter(private val context: Context, private val dataSource: ArrayLis
         // Get view for row item
         val rowView = inflater.inflate(R.layout.item_todo, parent, false)
 
-        val titleTextView = rowView.findViewById(R.id.task_title) as TextView
-        val startTimeTextView = rowView.findViewById(R.id.task_start_time) as TextView
+        val titleTextView = rowView.findViewById(R.id.tvTask_title) as TextView
+        val startTimeTextView = rowView.findViewById(R.id.tvTask_start_time) as TextView
 
 
-        val recipe = getItem(position) as ToDoList
+        val task = getItem(position) as ToDoList
 
-        titleTextView.text = recipe.title
-        startTimeTextView.text = recipe.startTime.toString()
+        titleTextView.text = task.title
+        startTimeTextView.text = task.startTime.toString()
 
 
 

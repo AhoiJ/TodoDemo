@@ -47,7 +47,7 @@ class AllOpenActivity : AppCompatActivity() {
                 dataSnapshot.children.mapNotNullTo(toDo){
                     it.getValue<ToDoList>(ToDoList::class.java)
                 }
-                updateNakyma(toDo)
+                updateView(toDo)
 
             }
 
@@ -58,19 +58,21 @@ class AllOpenActivity : AppCompatActivity() {
         _db.child("ToDos").addValueEventListener(todoListener)
     }
     // correctly displays to-do list titles but otherwise useless
-    private fun updateNakyma(lista: MutableList<ToDoList>){
+    private fun updateView(lista: MutableList<ToDoList>){
         // initialize list
-        var listaus: List<String?> = mutableListOf()
+        var listaus: List<ToDoList> = mutableListOf() // can be made into List<ToDoList>, need to check
+
         // initialize variable of selfmade class ToDoList
         var too = ToDoList()
         // goes through all elements in lista, 'too' can only hold [1] object at a time
         for (i in 0..lista.lastIndex ){
-            too = lista[i]
+            listaus = lista
             // transfer title from too to a mutable list(i know it makes no sense)
-            listaus += too.title
+          //  listaus += too.title
         }
         // create listview using custom layout item
-        val adapter = ArrayAdapter<String>(this, R.layout.listview_item, listaus)
+        listaus[0].title
+        val adapter = ToDoAdapter(this, listaus)
         val listView: ListView = findViewById(R.id.listview_1)
         listView.setAdapter(adapter)
         
