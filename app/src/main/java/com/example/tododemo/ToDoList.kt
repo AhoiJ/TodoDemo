@@ -5,6 +5,7 @@ class ToDoList {
         fun create(): ToDoList = ToDoList()
     }
     var objId: String? = null
+    var userId: String? = null
     var title: String? = null
     // done boolean should be on each task, may need to implement "subObject" 
     var tasks: List<String>? = null

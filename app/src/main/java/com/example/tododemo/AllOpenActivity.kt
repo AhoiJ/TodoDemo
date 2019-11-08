@@ -15,7 +15,7 @@ class AllOpenActivity : AppCompatActivity() {
     private var toDo: MutableList<ToDoList> = mutableListOf()
 
     private lateinit var auth: FirebaseAuth
-    lateinit var _db: DatabaseReference
+    lateinit var db: DatabaseReference
 
     public override fun onStart() {
         super.onStart()
@@ -28,7 +28,7 @@ class AllOpenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_all_open)
 
-        _db = FirebaseDatabase.getInstance().reference
+        db = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
 
         val firebaseUser = auth.currentUser // currently useless, should be in onStart
@@ -48,20 +48,17 @@ class AllOpenActivity : AppCompatActivity() {
                     it.getValue<ToDoList>(ToDoList::class.java)
                 }
                 updateView(toDo)
-
             }
-
             override fun onCancelled(databaseError: DatabaseError) {
                 println("loadPost:onCancelled ${databaseError.toException()}")
             }
         }
-        _db.child("ToDos").addValueEventListener(todoListener)
+        db.child("todos").addValueEventListener(todoListener)
     }
     // correctly displays to-do list titles but otherwise useless
     private fun updateView(lista: MutableList<ToDoList>){
         // initialize list
         var listaus: List<ToDoList> = mutableListOf() // can be made into List<ToDoList>, need to check
-
         // initialize variable of selfmade class ToDoList
         var too = ToDoList()
         // goes through all elements in lista, 'too' can only hold [1] object at a time

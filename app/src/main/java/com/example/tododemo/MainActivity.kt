@@ -25,7 +25,7 @@ import java.time.format.DateTimeFormatter
 class MainActivity : AppCompatActivity()  {
 
     private lateinit var auth: FirebaseAuth
-    lateinit var _db: DatabaseReference
+    lateinit var db: DatabaseReference
 
     public override fun onStart() {
         super.onStart()
@@ -38,11 +38,10 @@ class MainActivity : AppCompatActivity()  {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        _db = FirebaseDatabase.getInstance().reference
+        db = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
-
+        // initialize list to hold data that will be saved
         var listTodo: List<String> = mutableListOf()
-
 
         btnAddTodo.setOnClickListener(View.OnClickListener {
             if (etTodoItem.text != null) {
@@ -54,43 +53,42 @@ class MainActivity : AppCompatActivity()  {
         })
 
         btnPublish.setOnClickListener(View.OnClickListener {
-            if (etTitle.text != null) {
-                // Add title as Table name to database and add todo items as items
+            // Checks is title empty and listTodo empty, if eighter emty, does not publish
+            if (etTitle.text != null && listTodo.isNotEmpty()) {
+                // Add title as Table name to database and add to-do items as items
                 val createdTitle = etTitle.text.toString()
-                // creates new todo in firebase
+                // creates new to-do in firebase
                 addTodo(createdTitle, listTodo)
                 finish()
 
             } else
-                Toast.makeText(applicationContext, "Please add Title", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Please add Title or contents", Toast.LENGTH_SHORT).show()
         })
-
     }
 
     // updates the displayed list
     fun updateList(listTodo: List<String>) {
-
         val adapter = ArrayAdapter(
             this,
             R.layout.listview_item, listTodo
         )
-
         val listView: ListView = findViewById(R.id.todoList)
         listView.setAdapter(adapter)
     }
 
     fun addTodo(createdTitle: String, listTodo: List<String>){
-
-
         val list = ToDoList()
+        // gets user id to input into list
+        val currentUser = auth.currentUser
         list.title = createdTitle
         list.tasks = listTodo
         list.done = false
         list.startTime = Timestamp(System.currentTimeMillis()).toString()
-        // gets new key for list
-        val key = _db.child("ToDos").push().key
-        list.objId = key
-        _db.child("ToDos").child(key.toString()).setValue(list)
+        // user id as first table identification
+        val key = currentUser!!.uid
+        // get new 'key' for table id
+        val tableId = db.child("todos/" + key).push().key
+        db.child("todos/" + key).child(tableId.toString()).setValue(list)
     }
 
 }
