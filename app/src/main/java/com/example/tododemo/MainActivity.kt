@@ -86,8 +86,10 @@ class MainActivity : AppCompatActivity()  {
         list.startTime = Timestamp(System.currentTimeMillis()).toString()
         // user id as first table identification
         val key = currentUser!!.uid
+        list.creatorId = key
         // get new 'key' for table id
         val tableId = db.child("todos/" + key).push().key
+        list.objId = tableId.toString()
         db.child("todos/" + key).child(tableId.toString()).setValue(list)
     }
 
