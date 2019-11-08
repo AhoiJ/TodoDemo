@@ -3,19 +3,19 @@ package com.example.tododemo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_join.*
 
 class JoinActivity : AppCompatActivity() {
 
+    private lateinit var auth: FirebaseAuth
+    lateinit var db: DatabaseReference
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join)
-
-        // using this now as a test to add other users to projects
-
-        btnTest.setOnClickListener(View.OnClickListener {
-            var userPostiTesti = etTest.text
-        })
 
     }
 }

@@ -36,7 +36,7 @@ class AllOpenActivity : AppCompatActivity() {
         // used when implementing opening to-dos activity
 
     }
-
+    // may get other uses later, dont delete yet
     private fun updateUI(currentUser: FirebaseUser?) {
 
         //  initToDo loads snapshot every time database for this user updates
@@ -51,6 +51,7 @@ class AllOpenActivity : AppCompatActivity() {
                 dataSnapshot.children.mapNotNullTo(toDo) {
                     it.getValue<ToDoList>(ToDoList::class.java)
                 }
+                // passes to-do list into check function
                 userHasAccess(toDo)
             }
 
@@ -72,24 +73,33 @@ class AllOpenActivity : AppCompatActivity() {
 
     }
 
-    // checks if user is on a to-dos member list
+    // checks if user is on a to-dos member list and collects a list for displaying
     private fun userHasAccess(lista: MutableList<ToDoList>) {
+        // get users instance
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
+        // initialize list witch will have to-dos the user has access to
         var userHasList: MutableList<ToDoList> = mutableListOf()
+        // counters for while statements
         var i = 0
         var u = 0
+        // while i is less than lista size
         while (i < lista.count()) {
+            // if lista[i] creatorId is same as current users id add that to-do to users list collection
             if (lista[i].creatorId == currentUser!!.uid)
                 userHasList.add(lista[i])
+            // if user is not to-dos creator, user may still be a member
             else
+            // makes sure we dont access memberId at a position that does not exist
                 while (u < lista[i].memberId!!.count()) {
-                if (lista[i].memberId!![u] == currentUser.uid)
-                    userHasList.add(lista[i])
-                u++
-            }
+                    // if lista[i] memberId contains current users Id, add that to-do to users list collection
+                    if (lista[i].memberId!![u] == currentUser.uid)
+                        userHasList.add(lista[i])
+                    u++
+                }
             i++
         }
+        // if user had some lists, pass them on to be displayed
         if (userHasList.isNotEmpty())
             updateView(userHasList)
     }
