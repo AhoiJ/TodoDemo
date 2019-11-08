@@ -24,4 +24,7 @@
     <!-- UserInfo -->
     <string name="user_email">Logged in as: </string>
 
+    <!-- Testing -->
+    <string name="join">Join</string>
+
 </resources>

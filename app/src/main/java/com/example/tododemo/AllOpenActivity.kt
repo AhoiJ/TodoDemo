@@ -22,6 +22,8 @@ class AllOpenActivity : AppCompatActivity() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
         auth = FirebaseAuth.getInstance()
+        // sets the database instance to current users path
+        db = FirebaseDatabase.getInstance().getReference("todos/")
         val currentUser = auth.currentUser
         updateUI(currentUser) // need to implement UpdateUI that gets user data from firebase
     }
@@ -30,49 +32,66 @@ class AllOpenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_all_open)
 
-        // this is where the magic happens
-      //  initToDoList()
+        // OnCreate currently needed only to start activity
+        // used when implementing opening to-dos activity
 
     }
 
-    private fun updateUI(currentUser: FirebaseUser?){
-        val path = currentUser!!.uid
-        db = FirebaseDatabase.getInstance().getReference("todos/" + path)
+    private fun updateUI(currentUser: FirebaseUser?) {
 
-        initToDoList(path)
-       // updateView()
+        //  initToDo loads snapshot every time database for this user updates
+        initToDoList()
     }
 
-    private fun initToDoList(path: String) {
-        // gets snapchot of DB data
+    private fun initToDoList() {
+        // gets snapshot of DB data
         val todoListener = object : ValueEventListener {
             // refuses to work unless using mutableList<ToDoList>
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                dataSnapshot.children.mapNotNullTo(toDo){
+                dataSnapshot.children.mapNotNullTo(toDo) {
                     it.getValue<ToDoList>(ToDoList::class.java)
                 }
-                updateView(toDo)
+                userHasAccess(toDo)
             }
+
             override fun onCancelled(databaseError: DatabaseError) {
                 println("loadPost:onCancelled ${databaseError.toException()}")
             }
         }
         db.child("").addValueEventListener(todoListener)
     }
-    // correctly displays to-do list titles but otherwise useless
-    private fun updateView(lista: MutableList<ToDoList>){
-        // initialize list
-        var listaus: List<ToDoList> = mutableListOf()
-        // may make no sense anymore?
-        for (i in 0..lista.lastIndex ){
-            listaus = lista
-        }
-        // create listview using custom layout item
-        listaus[0].title
-        val adapter = ToDoAdapter(this, listaus)
+
+    // Updates listview with items when change occurs
+    private fun updateView(lista: MutableList<ToDoList>) {
+
+
+        // pass list into custom adapter
+        val adapter = ToDoAdapter(this, lista)
         val listView: ListView = findViewById(R.id.listview_1)
         listView.setAdapter(adapter)
-        
+
+    }
+
+    // checks if user is on a to-dos member list
+    private fun userHasAccess(lista: MutableList<ToDoList>) {
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+        var userHasList: MutableList<ToDoList> = mutableListOf()
+        var i = 0
+        var u = 0
+        while (i < lista.count()) {
+            if (lista[i].creatorId == currentUser!!.uid)
+                userHasList.add(lista[i])
+            else
+                while (u < lista[i].memberId!!.count()) {
+                if (lista[i].memberId!![u] == currentUser.uid)
+                    userHasList.add(lista[i])
+                u++
+            }
+            i++
+        }
+        if (userHasList.isNotEmpty())
+            updateView(userHasList)
     }
 
 }

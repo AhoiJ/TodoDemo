@@ -84,13 +84,26 @@ class MainActivity : AppCompatActivity()  {
         list.tasks = listTodo
         list.done = false
         list.startTime = Timestamp(System.currentTimeMillis()).toString()
-        // user id as first table identification
+        // adding a done list for each task
+        var tempArrayForCount: List<Int> = mutableListOf()
+        val add = 0
+        for (i in listTodo)
+            tempArrayForCount += add
+        list.taskDone = tempArrayForCount
+        // user id as table identification
         val key = currentUser!!.uid
         list.creatorId = key
+        // Bubblegum fix to input userId as one of members
+        var memberAsList: List<String> = mutableListOf()
+        memberAsList += currentUser.uid
+        list.memberId = memberAsList
+        // end of bubblegum
+
         // get new 'key' for table id
-        val tableId = db.child("todos/" + key).push().key
+        val tableId = db.child("todos/").push().key
         list.objId = tableId.toString()
-        db.child("todos/" + key).child(tableId.toString()).setValue(list)
+        // path currently is todos/tableid/ created To-DO
+        db.child("todos/").child(tableId.toString()).setValue(list)
     }
 
 }
