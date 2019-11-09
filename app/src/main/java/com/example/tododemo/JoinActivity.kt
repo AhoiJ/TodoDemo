@@ -35,13 +35,13 @@ class JoinActivity : AppCompatActivity() {
     private fun modify(toDo: MutableList<ToDoList>){
         val currentUser = auth.currentUser
         var memberAsList: List<String> = mutableListOf()
-        memberAsList += toDo[0].memberId!![1]
+        memberAsList += toDo[2].memberId!![0]
         memberAsList += currentUser!!.uid
         toDo[0].memberId = memberAsList
 
         val path = "memberId"
-        // path currently is todos/tableid/ created To-DO
-        db.child("-LtBDAsv_vdJAu_tZ8Sx").child(path).setValue(toDo[0].memberId)
+
+        db.child("-LtEtfS10QuwO10hQGF4").child(path).setValue(toDo[0].memberId)
 
     }
 
