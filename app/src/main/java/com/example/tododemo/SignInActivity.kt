@@ -8,11 +8,14 @@ import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_sign_in.*
 
 class SignInActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: DatabaseReference
 
     public override fun onStart() {
         super.onStart()
@@ -30,6 +33,8 @@ class SignInActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sign_in)
         // initialize firebase auth
         auth = FirebaseAuth.getInstance()
+        db = FirebaseDatabase.getInstance().reference
+
 
         btnSignUp.setOnClickListener(View.OnClickListener {
             // checks if both fields are filled
@@ -72,8 +77,16 @@ class SignInActivity : AppCompatActivity() {
                     Log.e("SignIn", "onComplete: Failed=" + it.getException())
 
                 // else if successful show in success in log
-                else
+                else {
                     Log.d("SignIn", "Successfully created user with uid: ${it.result!!.user!!.uid}")
+                    Toast.makeText(applicationContext, "Created user:", Toast.LENGTH_SHORT).show()
+                    // get new user data
+                    val currentUser = auth.currentUser
+                    // push current user data to table under users uid
+                    // /users/$user.uid/userData
+                    db.child("users").child(currentUser!!.uid).setValue(currentUser)
+
+                }
 
             }
             .addOnFailureListener {
