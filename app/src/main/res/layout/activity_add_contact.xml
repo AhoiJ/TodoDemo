@@ -7,60 +7,60 @@
     tools:context=".AddContactActivity"
     android:background="@color/colorPrimaryLight">
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="405dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginTop="25dp"
-        android:background="@drawable/login_border_custom"
-        android:orientation="vertical"
+    <ListView
+        android:id="@+id/friendRequestList"
+        android:layout_width="402dp"
+        android:layout_height="250dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Jenni" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout4"
-        android:layout_width="405dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/login_border_custom"
-        android:orientation="vertical"
+    <ListView
+        android:id="@+id/friendList"
+        android:layout_width="409dp"
+        android:layout_height="250dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+        app:layout_constraintTop_toBottomOf="@+id/friendRequestList" />
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Jere" />
-    </LinearLayout>
+    <EditText
+        android:id="@+id/etFriendRequestEmail"
+        android:layout_width="257dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        android:ems="10"
+        android:hint="Friend's email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <LinearLayout
-        android:layout_width="405dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/login_border_custom"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:text="Samu" />
-    </LinearLayout>
+    <Button
+        android:id="@+id/btnSendFriendRequest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginBottom="17dp"
+        android:text="Send request"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/etFriendRequestEmail" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
