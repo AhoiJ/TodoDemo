@@ -6,6 +6,7 @@ class FriendRequest {
     }
     var objId: String? = null
     var requesterEmail: String? = null
-    var hopefulFriend: String? = null
+    var hopefulFriendEmail: String? = null
+    // possibly a worthless variable
     var accepted: Boolean? = false
 }
