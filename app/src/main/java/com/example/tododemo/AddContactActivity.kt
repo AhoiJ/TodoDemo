@@ -5,20 +5,22 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.View
+import android.widget.ListView
 import android.widget.Toast
 import com.google.android.gms.common.internal.Objects
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_add_contact.*
 import kotlinx.android.synthetic.main.activity_sign_in.*
+import kotlinx.android.synthetic.main.listview_friends.*
 import java.sql.Timestamp
 
 class AddContactActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     lateinit var db: DatabaseReference
+    private var toDo: MutableList<FriendRequest> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +48,25 @@ class AddContactActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+    private fun initToDoList() {
+        // gets snapshot of DB data
+        val todoListener = object : ValueEventListener {
+            // refuses to work unless using mutableList<ToDoList>
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot.children.mapNotNullTo(toDo) {
+                    it.getValue<FriendRequest>(FriendRequest::class.java)
+                }
+                // passes to-do list into check function
+                checkFriendRequests(toDo)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("loadPost:onCancelled ${databaseError.toException()}")
+            }
+        }
+        db.child("").addValueEventListener(todoListener)
+    }
+
     fun addFriend(user: FirebaseUser) {
         val friend = FriendRequest()
         val currentUser = auth.currentUser
@@ -54,6 +75,32 @@ class AddContactActivity : AppCompatActivity() {
         friend.accepted = false
         val tableId = db.child("friendRequests/").push().key
         friend.objId = tableId.toString()
+        db.child("friendRequests/").setValue(friend)
+    }
+
+    private fun checkFriendRequests(requests: MutableList<FriendRequest>) {
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+        var i = 0
+        var u = 0
+        var userHasList: MutableList<FriendRequest> = mutableListOf()
+        while(i < requests.count()) {
+            if(requests[i].hopefulFriendEmail!! == currentUser!!.email) {
+                userHasList.add(requests[i])
+            }
+            i++
+        }
+        if (userHasList.isNotEmpty())
+            updateView(userHasList)
+    }
+
+    // Updates listview with items when change occurs
+    private fun updateView(lista: MutableList<FriendRequest>) {
+
+        // pass list into custom adapter
+        val adapter = FriendAdapter(this, lista)
+        val listView: ListView = findViewById(R.id.lvFrdRequests)
+        listView.setAdapter(adapter)
 
     }
 
@@ -61,8 +108,7 @@ class AddContactActivity : AppCompatActivity() {
         // need to implement this when user accepts friend request to add both users to each others friends and delete FriendRequest in question
         val currentUser = auth.currentUser
         //need to find correct friendRequest from DB with hopefulFriendEmail being current user
-        // how will this wörke?????
-        // db.child("friends").child(currentUser!!.uid).setValue(requesterEmail.text.toString())
+        //db.child("friends/").child(currentUser!!.uid).setValue(requesterEmail)
     }
 
 }

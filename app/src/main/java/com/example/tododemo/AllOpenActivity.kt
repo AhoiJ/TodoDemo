@@ -65,7 +65,6 @@ class AllOpenActivity : AppCompatActivity() {
     // Updates listview with items when change occurs
     private fun updateView(lista: MutableList<ToDoList>) {
 
-
         // pass list into custom adapter
         val adapter = ToDoAdapter(this, lista)
         val listView: ListView = findViewById(R.id.listview_1)
