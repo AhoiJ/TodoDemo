@@ -7,7 +7,7 @@
     <string name="email_address">Email Address</string>
     <string name="password">Password</string>
 
-   <!-- Buttons -->
+    <!-- Buttons -->
     <string name="new_todo_btn">Create new ToDo</string>
     <string name="show_all_open_btn">Show all open ToDo´s</string>
     <string name="contacts_bnt">Contacts</string>
