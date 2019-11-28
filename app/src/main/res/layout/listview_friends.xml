@@ -13,6 +13,8 @@
         android:layout_width="230dp"
         android:layout_height="50dp"
         android:text="email@example.com"
-        android:textSize="18sp" />
+        android:layout_centerVertical="true"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

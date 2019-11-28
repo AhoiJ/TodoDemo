@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_add_contact.*
 import kotlinx.android.synthetic.main.activity_sign_in.*
+import kotlinx.android.synthetic.main.listview_friend_requests.*
 import kotlinx.android.synthetic.main.listview_friends.*
 import java.sql.Timestamp
 
@@ -25,11 +26,11 @@ class AddContactActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_contact)
-        val currentUser = auth.currentUser!!
         // updateUI(currentUser)
 
         db = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser!!
 
         btnSendFriendRequest.setOnClickListener(View.OnClickListener {
             if (etFriendRequestEmail.text != null) {
@@ -41,11 +42,15 @@ class AddContactActivity : AppCompatActivity() {
                 toast.show()
             }
         })
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return super.onCreateOptionsMenu(menu)
+        // these 2 cause run errors if not commented out before working
+        //btnAccept.setOnClickListener(View.OnClickListener {
+          // acceptFriend()
+        //})
+
+        //btnDecline.setOnClickListener(View.OnClickListener {
+           // declineFriend()
+        //})
     }
 
     private fun initToDoList() {
@@ -67,6 +72,7 @@ class AddContactActivity : AppCompatActivity() {
         db.child("").addValueEventListener(todoListener)
     }
 
+    // adds friendRequest() type object to DB under "friendRequests"
     fun addFriend(user: FirebaseUser) {
         val friend = FriendRequest()
         val currentUser = auth.currentUser
@@ -78,37 +84,53 @@ class AddContactActivity : AppCompatActivity() {
         db.child("friendRequests/").setValue(friend)
     }
 
+    // checks friendRequests if currentUser is located under hopefulFriend
     private fun checkFriendRequests(requests: MutableList<FriendRequest>) {
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
         var i = 0
-        var u = 0
-        var userHasList: MutableList<FriendRequest> = mutableListOf()
+        var userHasReq: MutableList<FriendRequest> = mutableListOf()
         while(i < requests.count()) {
             if(requests[i].hopefulFriendEmail!! == currentUser!!.email) {
-                userHasList.add(requests[i])
+                userHasReq.add(requests[i])
             }
             i++
         }
-        if (userHasList.isNotEmpty())
-            updateView(userHasList)
+        if (userHasReq.isNotEmpty())
+            updateReqView(userHasReq)
     }
 
+    // same as above but with current friends (NEEDS CONFIRMATION WHERE FRIENDS ARE STORED, check fun acceptFriends)
+    private fun checkFriends(friends: MutableList<Friends>) {
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+        var u = 0
+    }
     // Updates listview with items when change occurs
-    private fun updateView(lista: MutableList<FriendRequest>) {
+    private fun updateReqView(reqList: MutableList<FriendRequest>) {
 
         // pass list into custom adapter
-        val adapter = FriendAdapter(this, lista)
+        val requestAdapter = FriendRequestAdapter(this, reqList)
         val listView: ListView = findViewById(R.id.lvFrdRequests)
-        listView.setAdapter(adapter)
+        listView.setAdapter(requestAdapter)
 
+    }
+
+    private fun updateFriendView(frdList: MutableList<Friends>) {
+        // pass list into custom adapter
+        val friendAdapter = FriendAdapter(this, frdList)
+        val listView: ListView = findViewById(R.id.lvCurrentFrd)
+        listView.setAdapter(friendAdapter)
     }
 
     fun acceptFriend() {
         // need to implement this when user accepts friend request to add both users to each others friends and delete FriendRequest in question
         val currentUser = auth.currentUser
-        //need to find correct friendRequest from DB with hopefulFriendEmail being current user
+
         //db.child("friends/").child(currentUser!!.uid).setValue(requesterEmail)
     }
 
+    fun declineFriend() {
+        // same as above, but only deletes the friendRequst in question
+    }
 }

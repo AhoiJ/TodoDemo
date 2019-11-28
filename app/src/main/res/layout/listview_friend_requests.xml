@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Layout for a single list item -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
@@ -12,8 +12,11 @@
         android:id="@+id/list_friend_invite"
         android:layout_width="230dp"
         android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:text="email@example.com"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btnAccept"
@@ -21,6 +24,8 @@
         android:layout_height="50dp"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_weight="1"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
         android:background="@android:drawable/checkbox_on_background"
         android:textSize="12sp" />
 
@@ -29,7 +34,9 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_weight="1"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/btnAccept"
         android:background="@android:drawable/ic_delete"
         android:textSize="12sp" />
 
-</LinearLayout>
+</RelativeLayout>
