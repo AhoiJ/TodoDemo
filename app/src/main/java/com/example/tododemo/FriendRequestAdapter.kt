@@ -22,9 +22,9 @@ class FriendRequestAdapter(context: Context, friendReqItemList: MutableList<Frie
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
         val objectId: String = friendReqList.get(position).objId as String
-        val requesterEmail: String = friendReqList.get(position).requesterEmail as String
-        val hopefulFriendEmail: String = friendReqList.get(position).hopefulFriendEmail as String
-        var accepted: Boolean = friendReqList.get(position).accepted as Boolean
+        val requesterEmail: String? = friendReqList.get(position).requesterEmail
+        val hopefulFriendEmail: String? = friendReqList.get(position).hopefulFriendEmail
+        var accepted: Boolean? = friendReqList.get(position).accepted
 
         val view: View
         val vh: ListRowHolder

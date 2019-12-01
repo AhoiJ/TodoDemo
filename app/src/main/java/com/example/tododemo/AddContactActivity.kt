@@ -21,21 +21,31 @@ class AddContactActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     lateinit var db: DatabaseReference
-    private var toDo: MutableList<FriendRequest> = mutableListOf()
+    private var reqItemList: MutableList<FriendRequest> = mutableListOf()
+    private var listViewItems: ListView? = null
+    lateinit var requestAdapter: FriendRequestAdapter
+    lateinit var friendAdapter: FriendAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_contact)
-        // updateUI(currentUser)
+        //updateUI(currentUser)
 
         db = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser!!
+        listViewItems = findViewById<View>(R.id.lvFrdRequests) as ListView
+        reqItemList = mutableListOf<FriendRequest>()
+        requestAdapter = FriendRequestAdapter(this, reqItemList!!)
+        listViewItems!!.setAdapter(requestAdapter)
+        db.orderByKey().addListenerForSingleValueEvent(itemListener)
 
         btnSendFriendRequest.setOnClickListener(View.OnClickListener {
             if (etFriendRequestEmail.text != null) {
-                // not tested, need to check firebase
+                // seems fine for now
                 addFriend(currentUser)
+                val okToast = Toast.makeText(applicationContext, "Friend request sent!", Toast.LENGTH_LONG)
+                okToast.show()
             }
             else {
                 val toast = Toast.makeText(applicationContext, "Please enter an email", Toast.LENGTH_LONG)
@@ -53,16 +63,54 @@ class AddContactActivity : AppCompatActivity() {
         //})
     }
 
-    private fun initToDoList() {
+    var itemListener: ValueEventListener = object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+            // Get Post object and use the values to update the UI
+            addDataToList(dataSnapshot)
+        }
+        override fun onCancelled(databaseError: DatabaseError) {
+            // Getting Item failed, log a message
+            Log.w("AddContactActivity", "loadItem:onCancelled", databaseError.toException())
+        }
+    }
+
+    private fun addDataToList(dataSnapshot: DataSnapshot) {
+        val items = dataSnapshot.children.iterator()
+        //Check if current database contains any collection
+        if (items.hasNext()) {
+            val toDoListindex = items.next()
+            val itemsIterator = toDoListindex.children.iterator()
+
+            //check if the collection has any items or not
+            while (itemsIterator.hasNext()) {
+
+                //get current item
+                val currentItem = itemsIterator.next()
+                val reqItem = FriendRequest.create()
+
+                //get current data in a map
+                val map = currentItem.getValue() as HashMap<String, Any>
+                reqItem.objId = currentItem.key
+                reqItem.accepted = map.get("accepted") as Boolean?
+                reqItem.hopefulFriendEmail = map.get("hopefulFriendEmail") as String?
+                reqItem.requesterEmail = map.get("requesterFriendEmail") as String?
+                reqItemList!!.add(reqItem)
+            }
+        }
+        //alert adapter that has changed
+        requestAdapter.notifyDataSetChanged()
+    }
+
+    private fun initReqList() {
         // gets snapshot of DB data
         val todoListener = object : ValueEventListener {
-            // refuses to work unless using mutableList<ToDoList>
+
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                dataSnapshot.children.mapNotNullTo(toDo) {
+                dataSnapshot.children.mapNotNullTo(reqItemList) {
                     it.getValue<FriendRequest>(FriendRequest::class.java)
                 }
-                // passes to-do list into check function
-                checkFriendRequests(toDo)
+                // passes reqItemList list into check function
+                checkFriendRequests(reqItemList)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -74,14 +122,14 @@ class AddContactActivity : AppCompatActivity() {
 
     // adds friendRequest() type object to DB under "friendRequests"
     fun addFriend(user: FirebaseUser) {
-        val friend = FriendRequest()
+        val friend = FriendRequest.create()
         val currentUser = auth.currentUser
         friend.hopefulFriendEmail = etFriendRequestEmail.text.toString()
         friend.requesterEmail = user.email
         friend.accepted = false
         val tableId = db.child("friendRequests/").push().key
         friend.objId = tableId.toString()
-        db.child("friendRequests/").setValue(friend)
+        db.child("friendRequests/").child(tableId.toString()).setValue(friend)
     }
 
     // checks friendRequests if currentUser is located under hopefulFriend
