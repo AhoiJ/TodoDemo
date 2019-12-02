@@ -14,46 +14,40 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 
 
-class FriendRequestAdapter(context: Context, friendReqItemList: MutableList<FriendRequest>) : BaseAdapter() {
+class FriendRequestAdapter(private val context: Context, private val friendReqItemList: MutableList<FriendRequest>) : BaseAdapter() {
 
-    private val fInflater: LayoutInflater = LayoutInflater.from(context)
-    private var friendReqList = friendReqItemList
+    private val fInflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    //private var friendReqList = friendReqItemList
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
-        val objectId: String = friendReqList.get(position).objId as String
-        val requesterEmail: String? = friendReqList.get(position).requesterEmail
-        val hopefulFriendEmail: String? = friendReqList.get(position).hopefulFriendEmail
-        var accepted: Boolean? = friendReqList.get(position).accepted
+       // val objectId: String = friendReqList.get(position).objId as String
+       // val requesterEmail: String? = friendReqList.get(position).requesterEmail
+       // val hopefulFriendEmail: String? = friendReqList.get(position).hopefulFriendEmail
+        // var accepted: Boolean? = friendReqList.get(position).accepted
 
-        val view: View
-        val vh: ListRowHolder
-        if (convertView == null) {
-            view = fInflater.inflate(R.layout.listview_friend_requests, parent, false)
-            vh = ListRowHolder(view)
-            view.tag= vh
-        }
-        else {
-            view = convertView
-            vh = view.tag as ListRowHolder
-        }
+        val reqView = fInflater.inflate(R.layout.listview_friend_requests, parent, false)
 
-        vh.label.text = requesterEmail
+        val requestTextView = reqView.findViewById(R.id.list_friend_invite) as TextView
 
-        return view
+        val request = getItem(position) as FriendRequest
+
+        requestTextView.text = request.requesterEmail
+
+        return reqView
     }
 
-    override fun getItem(index: Int): Any {
-        return friendReqList.get(index)
+    override fun getItem(position: Int): Any {
+        return friendReqItemList[position]
     }
-    override fun getItemId(index: Int): Long {
-        return index.toLong()
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
     override fun getCount(): Int {
-        return friendReqList.size
+        return friendReqItemList.size
     }
 
-    private class ListRowHolder(row: View?) {
-        val label: TextView = row!!.findViewById<TextView>(R.id.list_friend_invite) as TextView
-    }
+    //private class ListRowHolder(row: View?) {
+     //   val label: TextView = row!!.findViewById<TextView>(R.id.list_friend_invite) as TextView
+    //}
 }

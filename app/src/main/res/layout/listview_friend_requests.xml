@@ -14,7 +14,8 @@
         android:layout_height="50dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:text="email@example.com"
+        android:text="no one wants to be your friend"
+        android:background="@drawable/button"
         android:textSize="18sp"
         android:textStyle="bold" />
 

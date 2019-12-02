@@ -103,7 +103,7 @@ class AddContactActivity : AppCompatActivity() {
 
     private fun initReqList() {
         // gets snapshot of DB data
-        val todoListener = object : ValueEventListener {
+        val reqListener = object : ValueEventListener {
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 dataSnapshot.children.mapNotNullTo(reqItemList) {
@@ -117,7 +117,7 @@ class AddContactActivity : AppCompatActivity() {
                 println("loadPost:onCancelled ${databaseError.toException()}")
             }
         }
-        db.child("").addValueEventListener(todoListener)
+        db.child("").addValueEventListener(reqListener)
     }
 
     // adds friendRequest() type object to DB under "friendRequests"
@@ -136,8 +136,8 @@ class AddContactActivity : AppCompatActivity() {
     private fun checkFriendRequests(requests: MutableList<FriendRequest>) {
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
-        var i = 0
         var userHasReq: MutableList<FriendRequest> = mutableListOf()
+        var i = 0
         while(i < requests.count()) {
             if(requests[i].hopefulFriendEmail!! == currentUser!!.email) {
                 userHasReq.add(requests[i])
