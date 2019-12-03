@@ -8,50 +8,42 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 
 
-class FriendAdapter(context: Context, friendItemList: MutableList<Friends>) : BaseAdapter() {
+class FriendAdapter(private val context: Context, friendItemList: MutableList<Friends>) : BaseAdapter() {
 
+    private lateinit var auth: FirebaseAuth
+    lateinit var db: DatabaseReference
     private val fInflater: LayoutInflater = LayoutInflater.from(context)
     private var friendList = friendItemList
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
-        val objectId: String = friendList.get(position).objectId as String
-        val friendName: String = friendList.get(position).friendName as String
+        val friendView = fInflater.inflate(R.layout.listview_friends, parent, false)
 
-        val view: View
-        val vh: ListRowHolder
-        if (convertView == null) {
-            view = fInflater.inflate(R.layout.listview_friends, parent, false)
-            vh = ListRowHolder(view)
-            view.tag= vh
+        val friendTextView = friendView.findViewById(R.id.list_friends) as TextView
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+        val friend = getItem(position) as Friends
+        if (currentUser!!.email == friend.friend1) {
+            friendTextView.text = friend.friend1
         }
-        else {
-            view = convertView
-            vh = view.tag as ListRowHolder
+        else if (currentUser!!.email == friend.friend2) {
+            friendTextView.text = friend.friend2
         }
 
-        vh.label.text = friendName
-
-        return view
+        return friendView
     }
 
-    override fun getItem(index: Int): Any {
-        return friendList.get(index)
+    override fun getItem(position: Int): Any {
+        return friendList[position]
     }
-    override fun getItemId(index: Int): Long {
-        return index.toLong()
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
     override fun getCount(): Int {
         return friendList.size
-    }
-
-    private class ListRowHolder(row: View?) {
-        val label: TextView = row!!.findViewById<TextView>(R.id.list_friends) as TextView
     }
 }

@@ -22,6 +22,7 @@ class AddContactActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     lateinit var db: DatabaseReference
     private var reqItemList: MutableList<FriendRequest> = mutableListOf()
+    private var friendItemList: MutableList<Friends> = mutableListOf()
     private var listViewItems: ListView? = null
     lateinit var requestAdapter: FriendRequestAdapter
     lateinit var friendAdapter: FriendAdapter
@@ -37,13 +38,15 @@ class AddContactActivity : AppCompatActivity() {
         listViewItems = findViewById<View>(R.id.lvFrdRequests) as ListView
         reqItemList = mutableListOf<FriendRequest>()
         requestAdapter = FriendRequestAdapter(this, reqItemList!!)
+        friendItemList = mutableListOf<Friends>()
+        friendAdapter = FriendAdapter(this, friendItemList)
         listViewItems!!.setAdapter(requestAdapter)
         db.orderByKey().addListenerForSingleValueEvent(itemListener)
 
         btnSendFriendRequest.setOnClickListener(View.OnClickListener {
             if (etFriendRequestEmail.text != null) {
                 // seems fine for now
-                addFriend(currentUser)
+                addFriendRequest(currentUser)
                 val okToast = Toast.makeText(applicationContext, "Friend request sent!", Toast.LENGTH_LONG)
                 okToast.show()
             }
@@ -52,6 +55,7 @@ class AddContactActivity : AppCompatActivity() {
                 toast.show()
             }
         })
+
 
         // these 2 cause run errors if not commented out before working
         //btnAccept.setOnClickListener(View.OnClickListener {
@@ -111,6 +115,11 @@ class AddContactActivity : AppCompatActivity() {
                 }
                 // passes reqItemList list into check function
                 checkFriendRequests(reqItemList)
+
+                dataSnapshot.children.mapNotNullTo(friendItemList) {
+                    it.getValue<Friends>(Friends::class.java)
+                }
+                checkFriends(friendItemList)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -121,7 +130,7 @@ class AddContactActivity : AppCompatActivity() {
     }
 
     // adds friendRequest() type object to DB under "friendRequests"
-    fun addFriend(user: FirebaseUser) {
+    fun addFriendRequest(user: FirebaseUser) {
         val friend = FriendRequest.create()
         val currentUser = auth.currentUser
         friend.hopefulFriendEmail = etFriendRequestEmail.text.toString()
@@ -148,11 +157,20 @@ class AddContactActivity : AppCompatActivity() {
             updateReqView(userHasReq)
     }
 
-    // same as above but with current friends (NEEDS CONFIRMATION WHERE FRIENDS ARE STORED, check fun acceptFriends)
+    //checks 'friends' if currentUser is located under friend1 or friend2
     private fun checkFriends(friends: MutableList<Friends>) {
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
+        var userHasFriend: MutableList<Friends> = mutableListOf()
         var u = 0
+        while(u < friends.count()) {
+            if(friends[u].friend1!! == currentUser!!.email) {
+                userHasFriend.add(friends[u])
+            }
+            u++
+        }
+        if (userHasFriend.isNotEmpty())
+            updateFriendView(userHasFriend)
     }
     // Updates listview with items when change occurs
     private fun updateReqView(reqList: MutableList<FriendRequest>) {
@@ -171,14 +189,20 @@ class AddContactActivity : AppCompatActivity() {
         listView.setAdapter(friendAdapter)
     }
 
-    fun acceptFriend() {
+    fun acceptFriend(user: FirebaseUser) {
         // need to implement this when user accepts friend request to add both users to each others friends and delete FriendRequest in question
+        val friends = Friends.create()
         val currentUser = auth.currentUser
+        // need to get the requesterEmail from current list item to friends.friend1
 
-        //db.child("friends/").child(currentUser!!.uid).setValue(requesterEmail)
+        friends.friend2 = currentUser!!.email
+        val tableId = db.child("friends/").push().key
+        friends.objectId = tableId.toString()
+        db.child("friends/").child(tableId.toString()).setValue(friends)
     }
 
     fun declineFriend() {
         // same as above, but only deletes the friendRequst in question
+
     }
 }

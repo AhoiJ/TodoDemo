@@ -8,32 +8,29 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 
 
 class FriendRequestAdapter(private val context: Context, private val friendReqItemList: MutableList<FriendRequest>) : BaseAdapter() {
+
+    private lateinit var auth: FirebaseAuth
+    lateinit var db: DatabaseReference
 
     private val fInflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     //private var friendReqList = friendReqItemList
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
-       // val objectId: String = friendReqList.get(position).objId as String
-       // val requesterEmail: String? = friendReqList.get(position).requesterEmail
-       // val hopefulFriendEmail: String? = friendReqList.get(position).hopefulFriendEmail
-        // var accepted: Boolean? = friendReqList.get(position).accepted
-
         val reqView = fInflater.inflate(R.layout.listview_friend_requests, parent, false)
 
         val requestTextView = reqView.findViewById(R.id.list_friend_invite) as TextView
-
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
         val request = getItem(position) as FriendRequest
-
-        requestTextView.text = request.requesterEmail
-
+        if (currentUser!!.email == request.hopefulFriendEmail) {
+            requestTextView.text = request.requesterEmail
+        }
         return reqView
     }
 
@@ -46,8 +43,4 @@ class FriendRequestAdapter(private val context: Context, private val friendReqIt
     override fun getCount(): Int {
         return friendReqItemList.size
     }
-
-    //private class ListRowHolder(row: View?) {
-     //   val label: TextView = row!!.findViewById<TextView>(R.id.list_friend_invite) as TextView
-    //}
 }

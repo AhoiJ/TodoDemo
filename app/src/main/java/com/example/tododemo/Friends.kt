@@ -7,5 +7,6 @@ class Friends {
     }
 
     var objectId: String? = null
-    var friendName: String? = null
+    var friend1: String? = null
+    var friend2: String? = null
 }

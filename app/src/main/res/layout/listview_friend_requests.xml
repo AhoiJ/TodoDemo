@@ -16,7 +16,7 @@
         android:layout_centerVertical="true"
         android:text="no one wants to be your friend"
         android:background="@drawable/button"
-        android:textSize="18sp"
+        android:textSize="12sp"
         android:textStyle="bold" />
 
     <Button
