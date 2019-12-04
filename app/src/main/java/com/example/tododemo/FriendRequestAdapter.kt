@@ -15,10 +15,8 @@ import com.google.firebase.database.*
 class FriendRequestAdapter(private val context: Context, private val friendReqItemList: MutableList<FriendRequest>) : BaseAdapter() {
 
     private lateinit var auth: FirebaseAuth
-    lateinit var db: DatabaseReference
 
     private val fInflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    //private var friendReqList = friendReqItemList
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
