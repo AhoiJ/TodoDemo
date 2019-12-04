@@ -19,8 +19,11 @@ class FriendRequestAdapter(private val context: Context, private val friendReqIt
     private val fInflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        //listview_friend_requests = custom xml for one row
 
         val reqView = fInflater.inflate(R.layout.listview_friend_requests, parent, false)
+
+        //list_friend_invite = inside custom xml the TextView that should have requesterEmail
 
         val requestTextView = reqView.findViewById(R.id.list_friend_invite) as TextView
         auth = FirebaseAuth.getInstance()
