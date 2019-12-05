@@ -20,7 +20,7 @@ class AddContactActivity : AppCompatActivity() {
     lateinit var requestAdapter: FriendRequestAdapter
     lateinit var friendAdapter: FriendAdapter
     private var listViewFriends: ListView? = null
-  //  private var friendList: MutableList<Friends> = mutableListOf()
+    //  private var friendList: MutableList<Friends> = mutableListOf()
     private var friendList: MutableList<String> = mutableListOf()
 
 
@@ -52,7 +52,6 @@ class AddContactActivity : AppCompatActivity() {
         friendRequestList = mutableListOf<FriendRequest>()
 
 
-
         // onClickListener for the "Send request" button
         btnSendFriendRequest.setOnClickListener(View.OnClickListener {
             if (etFriendRequestEmail.text != null) {
@@ -66,9 +65,8 @@ class AddContactActivity : AppCompatActivity() {
                 toast.show()
             }
         })
-
+/*
         val contactListener = object : ValueEventListener {
-            // refuses to work unless using mutableList<ToDoList>
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 dataSnapshot.children.mapNotNullTo(friendList){
                     it.getValue<String>(String::class.java)
@@ -81,8 +79,8 @@ class AddContactActivity : AppCompatActivity() {
             }
         }
 
-        db.child("contacts").child(currentUser.uid).child("friends").addValueEventListener(contactListener)
-
+          db.child("contacts").child(currentUser.uid).child("friends").addValueEventListener(contactListener)
+*/
         // gets snapshot of DB data
         val requestListener = object : ValueEventListener {
             // refuses to work unless using mutableList<ToDoList>
@@ -102,17 +100,11 @@ class AddContactActivity : AppCompatActivity() {
 
     }
 
-
-
-
-
     private fun addFriendsToList(friendList: List<String>) {
         friendAdapter = FriendAdapter(this, friendList)
         val listView: ListView = findViewById(R.id.lvCurrentFrd)
         listView.setAdapter(friendAdapter)
     }
-
-
 
 
     // checks if user is the receiver on list and collects a list for displaying

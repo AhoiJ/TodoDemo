@@ -9,8 +9,7 @@ import android.widget.Button
 import android.widget.TextView
 
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 
 /*
  Some of code taken from https://demonuts.com/kotlin-listview-button/
@@ -27,11 +26,12 @@ class FriendRequestAdapter(
 
     private lateinit var auth: FirebaseAuth
     lateinit var db: DatabaseReference
+    private var friendList: MutableList<String> = mutableListOf()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var convertView = convertView
         val holder: ViewHolder
-
+        var friend = Friends()
         if (convertView == null) {
             holder = ViewHolder()
 
@@ -61,14 +61,17 @@ class FriendRequestAdapter(
             //val friendReq = AddContactActivity.friendRequestList.get(pos)
 
             val friendReq: FriendRequest
+            // get request from button pos
             friendReq = AddContactActivity.friendRequestList.get(pos)
-            var test: List<String> = mutableListOf()
-            test += friendReq.requesterEmail.toString()
-            val friend = Friends()
+            var test: MutableList<String> = mutableListOf()
+            test = getFriendsFromDatabase()
+            test.add(friendReq.requesterEmail.toString())
+
             friend.friends = test
 
             db.child("contacts/").child(currentUser!!.uid).setValue(friend)
-
+            test.clear()
+            friend.clear()
 
         }
 
@@ -76,6 +79,28 @@ class FriendRequestAdapter(
 
     }
 
+    fun getFriendsFromDatabase(): MutableList<String> {
+        db = FirebaseDatabase.getInstance().reference
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+        val contactListener = object : ValueEventListener {
+            // refuses to work unless using mutableList<ToDoList>
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot.children.mapNotNullTo(friendList) {
+                    it.getValue<String>(String::class.java)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("loadPost:onCancelled ${databaseError.toException()}")
+            }
+        }
+
+        db.child("contacts").child(currentUser!!.uid).child("friends")
+            .addValueEventListener(contactListener)
+
+        return friendList
+    }
 
     override fun getItem(position: Int): Any {
         return friendReqItemList[position]
