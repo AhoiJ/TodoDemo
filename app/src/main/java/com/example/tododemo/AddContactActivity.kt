@@ -1,31 +1,34 @@
 package com.example.tododemo
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
 import android.view.View
 import android.widget.ListView
 import android.widget.Toast
-import com.google.android.gms.common.internal.Objects
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_add_contact.*
-import kotlinx.android.synthetic.main.activity_sign_in.*
-import kotlinx.android.synthetic.main.listview_friend_requests.*
-import kotlinx.android.synthetic.main.listview_friends.*
-import java.sql.Timestamp
+
 
 class AddContactActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     lateinit var db: DatabaseReference
     private var reqItemList: MutableList<FriendRequest> = mutableListOf()
-    private var friendItemList: MutableList<Friends> = mutableListOf()
     private var listViewItems: ListView? = null
     lateinit var requestAdapter: FriendRequestAdapter
     lateinit var friendAdapter: FriendAdapter
+    private var listViewFriends: ListView? = null
+  //  private var friendList: MutableList<Friends> = mutableListOf()
+    private var friendList: MutableList<String> = mutableListOf()
+
+
+    public override fun onStart() {
+        super.onStart()
+
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,75 +37,111 @@ class AddContactActivity : AppCompatActivity() {
         db = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser!!
-        // the listview in which is the custom friendrequest xml (listview_friend_requests.xml)
+        // initialize listView for requests
         listViewItems = findViewById<View>(R.id.lvFrdRequests) as ListView
-        // init an empty friendRequest list for displaying
-        reqItemList = mutableListOf<FriendRequest>()
-        requestAdapter = FriendRequestAdapter(this, reqItemList!!)
-        // init an empty friend list for displaying
-        friendItemList = mutableListOf<Friends>()
-        friendAdapter = FriendAdapter(this, friendItemList)
+        // initialize adapter
+        requestAdapter = FriendRequestAdapter(this, reqItemList)
         // set friendRequestAdapter for listViewItems
         listViewItems!!.setAdapter(requestAdapter)
-        // listener that runs onDataChange once after itemListener is called
-        db.orderByKey().addListenerForSingleValueEvent(itemListener)
 
-        // onclicklistener for the "Send request" button
+        // initialize listview for friends
+        listViewFriends = findViewById(R.id.lvCurrentFrd) as ListView
+        // initialize adapter for friends
+        friendAdapter = FriendAdapter(this, friendList)
+        // init list for friendRequests
+        friendRequestList = mutableListOf<FriendRequest>()
+
+
+
+        // onClickListener for the "Send request" button
         btnSendFriendRequest.setOnClickListener(View.OnClickListener {
             if (etFriendRequestEmail.text != null) {
                 sendFriendRequest(currentUser)
-                val okToast = Toast.makeText(applicationContext, "Friend request sent!", Toast.LENGTH_LONG)
+                val okToast =
+                    Toast.makeText(applicationContext, "Friend request sent!", Toast.LENGTH_LONG)
                 okToast.show()
-            }
-            else {
-                val toast = Toast.makeText(applicationContext, "Please enter an email", Toast.LENGTH_LONG)
+            } else {
+                val toast =
+                    Toast.makeText(applicationContext, "Please enter an email", Toast.LENGTH_LONG)
                 toast.show()
             }
         })
+
+        val contactListener = object : ValueEventListener {
+            // refuses to work unless using mutableList<ToDoList>
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot.children.mapNotNullTo(friendList){
+                    it.getValue<String>(String::class.java)
+                }
+                addFriendsToList(friendList)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("loadPost:onCancelled ${databaseError.toException()}")
+            }
+        }
+
+        db.child("contacts").child(currentUser.uid).child("friends").addValueEventListener(contactListener)
+
+        // gets snapshot of DB data
+        val requestListener = object : ValueEventListener {
+            // refuses to work unless using mutableList<ToDoList>
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot.children.mapNotNullTo(friendRequestList) {
+                    it.getValue<FriendRequest>(FriendRequest::class.java)
+                }
+                // passes to-do list into check function
+                userHasAccessToRequests(friendRequestList)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("loadPost:onCancelled ${databaseError.toException()}")
+            }
+        }
+        db.child("friendRequests").addValueEventListener(requestListener)
+
     }
 
-    // listener for listview
-    private var itemListener: ValueEventListener = object : ValueEventListener {
-        override fun onDataChange(dataSnapshot: DataSnapshot) {
-            // Get Post object and use the values to update the UI
-            addDataToList(dataSnapshot)
+
+
+
+
+    private fun addFriendsToList(friendList: List<String>) {
+        friendAdapter = FriendAdapter(this, friendList)
+        val listView: ListView = findViewById(R.id.lvCurrentFrd)
+        listView.setAdapter(friendAdapter)
+    }
+
+
+
+
+    // checks if user is the receiver on list and collects a list for displaying
+    private fun userHasAccessToRequests(lista: MutableList<FriendRequest>) {
+        // get users instance
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+        // initialize list witch will have to-dos the user has access to
+        var userHasList: MutableList<FriendRequest> = mutableListOf()
+        // counters for while statements
+        var i = 0
+        // while i is less than lista size
+        while (i < lista.count()) {
+            // if lista[i] creatorId is same as current users id add that to-do to users list collection
+            if (lista[i].hopefulFriendEmail == currentUser!!.email.toString()) {
+                userHasList.add(lista[i])
+            }
+            i++
         }
-        override fun onCancelled(databaseError: DatabaseError) {
-            // Getting Item failed, log a message
-            Log.w("AddContactActivity", "loadItem:onCancelled", databaseError.toException())
-        }
+        // if user had some lists, pass them on to be displayed
+        if (userHasList.isNotEmpty())
+            addRequestsToList(userHasList)
     }
 
     // fills the reqItemList object with FriendRequest type object using snapshots. Seems very oregano sandwich
-    private fun addDataToList(dataSnapshot: DataSnapshot) {
-        // iterator goes through the collection once
-        val items = dataSnapshot.children.iterator()
-        //Check if current database contains any collection
-        if (items.hasNext()) {
-            val reqListindex = items.next()
-            val itemsIterator = reqListindex.children.iterator()
-
-            //check if the collection has any items or not
-            while (itemsIterator.hasNext()) {
-
-                //next gets current item and moves iterator position forward
-                val currentItem = itemsIterator.next()
-                //make empty FriendRequest object
-                val reqItem = FriendRequest.create()
-
-                //get current data in a map
-                val map = currentItem.getValue() as HashMap<String, Any>
-                // takes them from the created map and puts them into the reqItem object (seems redundant but WHATEVER)
-                reqItem.objId = currentItem.key
-                reqItem.accepted = map.get("accepted") as Boolean?
-                reqItem.hopefulFriendEmail = map.get("hopefulFriendEmail") as String?
-                reqItem.requesterEmail = map.get("requesterFriendEmail") as String?
-                // adds reqItem to the reqItemList object which goes to the adapter
-                reqItemList!!.add(reqItem)
-            }
-        }
-        //alert adapter that data has changed
-        requestAdapter.notifyDataSetChanged()
+    private fun addRequestsToList(reqItemList: MutableList<FriendRequest>) {
+        val adapter = FriendRequestAdapter(this, reqItemList)
+        val listView: ListView = findViewById(R.id.lvFrdRequests)
+        listView.setAdapter(adapter)
     }
 
     // adds friendRequest() type object to DB under "friendRequests"
@@ -120,5 +159,9 @@ class AddContactActivity : AppCompatActivity() {
         db.child("friendRequests/").child(tableId.toString()).setValue(friend)
     }
 
+    companion object {
+        // lateinit var friendRequestList: ArrayList<FriendRequest>
+        lateinit var friendRequestList: MutableList<FriendRequest>
+    }
 
 }

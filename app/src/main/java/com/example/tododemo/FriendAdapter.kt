@@ -12,38 +12,35 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
 
-class FriendAdapter(private val context: Context, friendItemList: MutableList<Friends>) : BaseAdapter() {
+class FriendAdapter(private val context: Context, friendItemList: List<String?>) : BaseAdapter() {
 
-    private lateinit var auth: FirebaseAuth
-    lateinit var db: DatabaseReference
-    private val fInflater: LayoutInflater = LayoutInflater.from(context)
+    private val inflater: LayoutInflater =
+        context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private var friendList = friendItemList
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
-        val friendView = fInflater.inflate(R.layout.listview_friends, parent, false)
+        val rowView = inflater.inflate(R.layout.listview_friends, parent, false)
 
-        val friendTextView = friendView.findViewById(R.id.list_friends) as TextView
-        auth = FirebaseAuth.getInstance()
-        val currentUser = auth.currentUser
-        val friend = getItem(position) as Friends
-        if (currentUser!!.email == friend.friend1) {
-            friendTextView.text = friend.friend1
-        }
-        else if (currentUser!!.email == friend.friend2) {
-            friendTextView.text = friend.friend2
-        }
+        val friendEmailView = rowView.findViewById(R.id.list_friends) as TextView
 
-        return friendView
+        val friend = getItem(position) as String
+
+        friendEmailView.text = friend
+
+        return rowView
     }
 
-    override fun getItem(position: Int): Any {
+    override fun getItem(position: Int): String? {
         return friendList[position]
     }
+
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
+
     override fun getCount(): Int {
-        return friendList.size
+        return friendList!!.size
     }
+
 }
