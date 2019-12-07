@@ -97,7 +97,7 @@ class FriendRequestAdapter(
         }
 
         db.child("contacts").child(currentUser!!.uid).child("friends")
-            .addValueEventListener(contactListener)
+            .addListenerForSingleValueEvent(contactListener)
 
         return friendList
     }

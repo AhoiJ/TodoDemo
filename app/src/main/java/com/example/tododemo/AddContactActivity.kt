@@ -65,9 +65,10 @@ class AddContactActivity : AppCompatActivity() {
                 toast.show()
             }
         })
-/*
+
         val contactListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                friendList.clear()
                 dataSnapshot.children.mapNotNullTo(friendList){
                     it.getValue<String>(String::class.java)
                 }
@@ -80,7 +81,7 @@ class AddContactActivity : AppCompatActivity() {
         }
 
           db.child("contacts").child(currentUser.uid).child("friends").addValueEventListener(contactListener)
-*/
+
         // gets snapshot of DB data
         val requestListener = object : ValueEventListener {
             // refuses to work unless using mutableList<ToDoList>
