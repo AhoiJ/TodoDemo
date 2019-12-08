@@ -26,7 +26,7 @@ class FriendRequestAdapter(
 
     private lateinit var auth: FirebaseAuth
     lateinit var db: DatabaseReference
- //   private var friendList: MutableList<String> = mutableListOf()
+    //   private var friendList: MutableList<String> = mutableListOf()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var convertView = convertView
@@ -63,43 +63,34 @@ class FriendRequestAdapter(
             // get request from button pos
             friendReq = AddContactActivity.friendRequestList.get(pos)
             var test: MutableList<String> = mutableListOf()
-       //     test = getFriendsFromDatabase()
 
-                test.addAll(AddContactActivity.friendList)
-                test.add(friendReq.requesterEmail.toString())
+            test.addAll(AddContactActivity.friendList)
+            test.add(friendReq.requesterEmail.toString())
+            
+            removeAcceptedRequest(AddContactActivity.friendRequestList, pos)
 
-                db.child("contacts/").child(currentUser!!.uid).child("friends").setValue(test)
-                test.clear()
+            db.child("contacts/").child(currentUser!!.uid).child("friends").setValue(test)
+
+            test.clear()
         }
 
         return convertView!!
 
     }
-/*
-    fun getFriendsFromDatabase(): MutableList<String> {
+
+    // function to remove accepted request from list
+    fun removeAcceptedRequest(
+        requestList: MutableList<FriendRequest>,
+        position: Int
+    ) {
+
         db = FirebaseDatabase.getInstance().reference
-        auth = FirebaseAuth.getInstance()
-        val currentUser = auth.currentUser!!
-        val ctListener = object : ValueEventListener {
+        db.child("friendRequests").child(requestList[position].objId.toString())
+            .removeValue() // testaa laittaa sääntöihi write = true
 
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                dataSnapshot.children.mapNotNullTo(friendList) {
-                    it.getValue<String>(String::class.java)
-                }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                println("loadPost:onCancelled ${databaseError.toException()}")
-            }
-        }
-
-        db.child("contacts").child(currentUser.uid).child("friends")
-            .addListenerForSingleValueEvent(ctListener)
-
-        return friendList
     }
 
- */
 
     override fun getItem(position: Int): Any {
         return friendReqItemList[position]

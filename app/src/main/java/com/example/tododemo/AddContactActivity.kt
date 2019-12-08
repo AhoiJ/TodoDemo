@@ -92,26 +92,6 @@ class AddContactActivity : AppCompatActivity() {
         db.child("friendRequests").addValueEventListener(requestListener)
 
 
-/*
-        val ctListener = object : ValueEventListener {
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                friendList.clear()
-                dataSnapshot.children.mapNotNullTo(friendList) {
-                    it.getValue<String>(String::class.java)
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                println("loadPost:onCancelled ${databaseError.toException()}")
-            }
-        }
-
-        db.child("contacts").child(currentUser.uid).child("friends")
-            .addValueEventListener(ctListener)
-
- */
-
     }
 
 
@@ -162,7 +142,7 @@ class AddContactActivity : AppCompatActivity() {
     companion object {
         // lateinit var friendRequestList: ArrayList<FriendRequest>
         lateinit var friendRequestList: MutableList<FriendRequest>
-        lateinit var  friendList: MutableList<String>
+        lateinit var friendList: MutableList<String>
     }
 
 }
