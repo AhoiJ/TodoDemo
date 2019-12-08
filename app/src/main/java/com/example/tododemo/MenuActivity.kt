@@ -62,7 +62,7 @@ class MenuActivity : AppCompatActivity() {
     }
 
     fun openContacts(){
-        val intent = Intent(this, AddContactActivity::class.java)
+        val intent = Intent(this, ContactsMenuActivity::class.java)
         startActivity(intent)
     }
 

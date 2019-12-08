@@ -12,25 +12,12 @@
     app:layout_constraintTop_toTopOf="parent"
     tools:context=".AddContactActivity">
 
-    <LinearLayout
-        android:id="@+id/currentFrdLinearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="186dp"
-        android:layout_alignWithParentIfMissing="false"
-        android:orientation="vertical">
-
-        <ListView
-            android:id="@+id/lvCurrentFrd"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/incReqLinearLayout"
         android:layout_width="match_parent"
-        android:layout_height="186dp"
-        android:layout_below="@id/currentFrdLinearLayout"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_marginTop="20dp"
         android:orientation="vertical">
 

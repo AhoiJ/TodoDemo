@@ -18,17 +18,11 @@ class AddContactActivity : AppCompatActivity() {
     private var reqItemList: MutableList<FriendRequest> = mutableListOf()
     private var listViewItems: ListView? = null
     lateinit var requestAdapter: FriendRequestAdapter
-    lateinit var friendAdapter: FriendAdapter
-    private var listViewFriends: ListView? = null
-    //  private var friendList: MutableList<Friends> = mutableListOf()
-    private var friendList: MutableList<String> = mutableListOf()
 
 
     public override fun onStart() {
         super.onStart()
-
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,13 +37,26 @@ class AddContactActivity : AppCompatActivity() {
         requestAdapter = FriendRequestAdapter(this, reqItemList)
         // set friendRequestAdapter for listViewItems
         listViewItems!!.setAdapter(requestAdapter)
-
-        // initialize listview for friends
-        listViewFriends = findViewById(R.id.lvCurrentFrd) as ListView
-        // initialize adapter for friends
-        friendAdapter = FriendAdapter(this, friendList)
-        // init list for friendRequests
         friendRequestList = mutableListOf<FriendRequest>()
+        friendList = mutableListOf<String>()
+
+        db = FirebaseDatabase.getInstance().reference
+        auth = FirebaseAuth.getInstance()
+        val ctListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                friendList.clear()
+                dataSnapshot.children.mapNotNullTo(AddContactActivity.friendList) {
+                    it.getValue<String>(String::class.java)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("loadPost:onCancelled ${databaseError.toException()}")
+            }
+        }
+
+        db.child("contacts").child(currentUser!!.uid).child("friends")
+            .addValueEventListener(ctListener)
 
 
         // onClickListener for the "Send request" button
@@ -66,26 +73,11 @@ class AddContactActivity : AppCompatActivity() {
             }
         })
 
-        val contactListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                friendList.clear()
-                dataSnapshot.children.mapNotNullTo(friendList){
-                    it.getValue<String>(String::class.java)
-                }
-                addFriendsToList(friendList)
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                println("loadPost:onCancelled ${databaseError.toException()}")
-            }
-        }
-
-          db.child("contacts").child(currentUser.uid).child("friends").addValueEventListener(contactListener)
-
         // gets snapshot of DB data
         val requestListener = object : ValueEventListener {
             // refuses to work unless using mutableList<ToDoList>
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                friendRequestList.clear()
                 dataSnapshot.children.mapNotNullTo(friendRequestList) {
                     it.getValue<FriendRequest>(FriendRequest::class.java)
                 }
@@ -99,12 +91,27 @@ class AddContactActivity : AppCompatActivity() {
         }
         db.child("friendRequests").addValueEventListener(requestListener)
 
-    }
 
-    private fun addFriendsToList(friendList: List<String>) {
-        friendAdapter = FriendAdapter(this, friendList)
-        val listView: ListView = findViewById(R.id.lvCurrentFrd)
-        listView.setAdapter(friendAdapter)
+/*
+        val ctListener = object : ValueEventListener {
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                friendList.clear()
+                dataSnapshot.children.mapNotNullTo(friendList) {
+                    it.getValue<String>(String::class.java)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("loadPost:onCancelled ${databaseError.toException()}")
+            }
+        }
+
+        db.child("contacts").child(currentUser.uid).child("friends")
+            .addValueEventListener(ctListener)
+
+ */
+
     }
 
 
@@ -113,13 +120,13 @@ class AddContactActivity : AppCompatActivity() {
         // get users instance
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
-        // initialize list witch will have to-dos the user has access to
+
         var userHasList: MutableList<FriendRequest> = mutableListOf()
         // counters for while statements
         var i = 0
         // while i is less than lista size
         while (i < lista.count()) {
-            // if lista[i] creatorId is same as current users id add that to-do to users list collection
+
             if (lista[i].hopefulFriendEmail == currentUser!!.email.toString()) {
                 userHasList.add(lista[i])
             }
@@ -155,6 +162,7 @@ class AddContactActivity : AppCompatActivity() {
     companion object {
         // lateinit var friendRequestList: ArrayList<FriendRequest>
         lateinit var friendRequestList: MutableList<FriendRequest>
+        lateinit var  friendList: MutableList<String>
     }
 
 }
