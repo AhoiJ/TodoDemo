@@ -21,9 +21,6 @@ class FriendRequestAdapter(
 ) : BaseAdapter() {
 
 
-    private val fInflater: LayoutInflater =
-        context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
     private lateinit var auth: FirebaseAuth
     lateinit var db: DatabaseReference
     //   private var friendList: MutableList<String> = mutableListOf()
@@ -53,25 +50,40 @@ class FriendRequestAdapter(
 
         holder.listViewInvite!!.setText(AddContactActivity.friendRequestList.get(position).requesterEmail)
 
+        // set tags for buttons
         holder.btnAccept!!.setTag(R.integer.btnAcceptView, convertView)
         holder.btnAccept!!.setTag(R.integer.btnAcceptPos, position)
+        holder.btnDecline!!.setTag(R.integer.btnDeclineView, convertView)
+        holder.btnDecline!!.setTag(R.integer.btnDeclinePos, position)
 
+        // acceptButton onClickListener
         holder.btnAccept!!.setOnClickListener {
+            // get position from button
             val pos = holder.btnAccept!!.getTag(R.integer.btnAcceptPos) as Int
-
+            // initialize friendReq
             val friendReq: FriendRequest
-            // get request from button pos
+            // get request using button position
             friendReq = AddContactActivity.friendRequestList.get(pos)
-            var test: MutableList<String> = mutableListOf()
+            // init list to hold friends
+            var listOfFriends: MutableList<String> = mutableListOf()
+            // updates list to the one in database
+            listOfFriends.addAll(AddContactActivity.friendList)
+            // add the new friend from request
+            listOfFriends.add(friendReq.requesterEmail.toString())
+            // remove the request from DB
+            removeRequest(AddContactActivity.friendRequestList, pos)
+            // push new list of friends
+            db.child("contacts/").child(currentUser!!.uid).child("friends").setValue(listOfFriends)
+            // clear local list to avoid bugs
+            listOfFriends.clear()
+        }
+        // listener for decline button
+        holder.btnDecline!!.setOnClickListener {
+            // get position from button
+            val pos = holder.btnDecline!!.getTag(R.integer.btnDeclinePos) as Int
+            // remove request that was declined
+            removeRequest(AddContactActivity.friendRequestList, pos)
 
-            test.addAll(AddContactActivity.friendList)
-            test.add(friendReq.requesterEmail.toString())
-            
-            removeAcceptedRequest(AddContactActivity.friendRequestList, pos)
-
-            db.child("contacts/").child(currentUser!!.uid).child("friends").setValue(test)
-
-            test.clear()
         }
 
         return convertView!!
@@ -79,14 +91,15 @@ class FriendRequestAdapter(
     }
 
     // function to remove accepted request from list
-    fun removeAcceptedRequest(
+    fun removeRequest(
         requestList: MutableList<FriendRequest>,
         position: Int
     ) {
 
         db = FirebaseDatabase.getInstance().reference
+        // removes the object where request was stored from database
         db.child("friendRequests").child(requestList[position].objId.toString())
-            .removeValue() // testaa laittaa sääntöihi write = true
+            .removeValue()
 
 
     }

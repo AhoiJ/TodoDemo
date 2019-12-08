@@ -40,11 +40,12 @@ class AddContactActivity : AppCompatActivity() {
         friendRequestList = mutableListOf<FriendRequest>()
         friendList = mutableListOf<String>()
 
+        // updates friendList when user accepts request
         db = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
         val ctListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                friendList.clear()
+                friendList.clear() // clear list so there are no local duplicates
                 dataSnapshot.children.mapNotNullTo(AddContactActivity.friendList) {
                     it.getValue<String>(String::class.java)
                 }
@@ -75,13 +76,12 @@ class AddContactActivity : AppCompatActivity() {
 
         // gets snapshot of DB data
         val requestListener = object : ValueEventListener {
-            // refuses to work unless using mutableList<ToDoList>
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 friendRequestList.clear()
                 dataSnapshot.children.mapNotNullTo(friendRequestList) {
                     it.getValue<FriendRequest>(FriendRequest::class.java)
                 }
-                // passes to-do list into check function
+                // parses list to contain only those for this user
                 userHasAccessToRequests(friendRequestList)
             }
 
