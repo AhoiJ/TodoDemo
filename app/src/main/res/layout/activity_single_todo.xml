@@ -1,44 +1,58 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@color/colorPrimaryLight"
-    android:padding="0dp"
-    android:gravity = "center">
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity"
+    android:background="@color/colorPrimaryLight">
 
-
+    <!-- create a Linear Layout with horizontal orientation and weightSum property -->
 
     <LinearLayout
-        android:id="@+id/sendLinearLayout"
+        android:id="@+id/firstLayout"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="498dp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:gravity = "center">
 
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MAIN TODO TITLE"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity = "center_vertical|left|start"
-                android:text="TILEEEEEEEEEEE" />
+        <Button
+            android:id="@+id/buttonInvite"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15sp"
+            android:layout_marginRight="2sp"
+            android:layout_weight="1"
+            android:text="Invite friend" />
+
 
     </LinearLayout>
 
+    <!-- create a Linear Layout with horizontal orientation and weightSum property -->
+
     <LinearLayout
-        android:id="@+id/incReqLinearLayout"
+        android:id="@+id/secondLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/firstLayout"
         android:layout_marginTop="20dp"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:weightSum="2">
+
     <ListView
         android:id="@+id/items_list"
         android:layout_width="match_parent"
