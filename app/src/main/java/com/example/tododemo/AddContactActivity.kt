@@ -63,13 +63,39 @@ class AddContactActivity : AppCompatActivity() {
         // onClickListener for the "Send request" button
         btnSendFriendRequest.setOnClickListener(View.OnClickListener {
             if (etFriendRequestEmail.text != null) {
-                sendFriendRequest(currentUser)
-                val okToast =
-                    Toast.makeText(applicationContext, "Friend request sent!", Toast.LENGTH_LONG)
-                okToast.show()
+                var i = 0
+                var isAlreadyFriend: Boolean = false
+                while (i <= friendList.count()) {
+                    if (friendList.count() == 0) {
+                        if (friendRequestList.count() != 0) {
+                            if (friendRequestList[i].hopefulFriendEmail == etFriendRequestEmail.text.toString())
+                                isAlreadyFriend = true
+                        }
+                    } else if (friendList[i] == etFriendRequestEmail.text.toString() || friendRequestList[i].hopefulFriendEmail == etFriendRequestEmail.text.toString())
+                        isAlreadyFriend = true
+                    i++
+                }
+                if (isAlreadyFriend == false) {
+                    sendFriendRequest(currentUser)
+                    val okToast =
+                        Toast.makeText(
+                            applicationContext,
+                            "Friend request sent!",
+                            Toast.LENGTH_SHORT
+                        )
+                    okToast.show()
+                } else {
+                    val okToast =
+                        Toast.makeText(
+                            applicationContext,
+                            "User is already your friend or has an unanswered request",
+                            Toast.LENGTH_SHORT
+                        )
+                    okToast.show()
+                }
             } else {
                 val toast =
-                    Toast.makeText(applicationContext, "Please enter an email", Toast.LENGTH_LONG)
+                    Toast.makeText(applicationContext, "Please enter an email", Toast.LENGTH_SHORT)
                 toast.show()
             }
         })
@@ -112,9 +138,8 @@ class AddContactActivity : AppCompatActivity() {
             }
             i++
         }
-        // if user had some lists, pass them on to be displayed
-        if (userHasList.isNotEmpty())
-            addRequestsToList(userHasList)
+
+        addRequestsToList(userHasList)
     }
 
     // fills the reqItemList object with FriendRequest type object using snapshots. Seems very oregano sandwich
