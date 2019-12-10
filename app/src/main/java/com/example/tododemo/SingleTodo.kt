@@ -20,10 +20,19 @@ class SingleTodo : AppCompatActivity() {
         //hakee tiedot AllOpenActivitysta
         singleTodo = intent.extras!!.get("toDoList") as ToDoList
 
+
+
         //hakee titlen tekstimuodossa
         //textView.setText(singleTodo.title)
         //items_list.setText(singleTodo.tasks)
     }
+
+    /*
+    private fun addFriendsToList(friendList: List<String>) {
+        friendAdapter = FriendAdapter(this, friendList)
+        val listView: ListView = findViewById(R.id.lvCurrentFrd)
+        listView.setAdapter(friendAdapter)
+    }*/
 
     companion object {
         lateinit var singleTodo: ToDoList

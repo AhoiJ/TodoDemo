@@ -51,7 +51,18 @@ class SingleTodoAdapter(
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser // null for some reason
 
-        holder.subTask!!.setText(SingleTodo.singleTodo.get(position).title)
+        holder.subTask!!.setText(SingleTodo.singleTodo.tasks!![position])
+
+        holder.taskDoneDid!!.setTag(R.integer.taskDoneDidView, convertView)
+        holder.taskDoneDid!!.setTag(R.integer.taskDoneDidPos, position)
+
+        // acceptButton onClickListener
+        holder.taskDoneDid!!.setOnClickListener {
+            // get position from button
+            val pos = holder.taskDoneDid!!.getTag(R.integer.taskDoneDidPos) as Int
+
+
+        }
 
         return convertView!!
     }
@@ -72,6 +83,7 @@ class SingleTodoAdapter(
 
         var taskDoneDid: CheckBox? = null
         var subTask: TextView? = null
+        //tarvitaan jos poisto ominaisuus lisätään
         //var deleteTask: ImageButton? = null
 
     }
