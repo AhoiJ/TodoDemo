@@ -11,7 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SingleTodo"></activity>
+        <activity android:name=".SingleTodoAdapter"></activity>
+        <activity android:name=".db.SingleTodoAdapter" />
+        <activity android:name=".SingleTodo" />
         <activity android:name=".AllOpenActivity" />
         <activity android:name=".AddContactActivity" />
         <activity android:name=".MenuActivity" />

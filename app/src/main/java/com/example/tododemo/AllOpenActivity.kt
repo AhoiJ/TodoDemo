@@ -74,11 +74,13 @@ class AllOpenActivity : AppCompatActivity() {
         val adapter = ToDoAdapter(this, lista)
         val listView: ListView = findViewById(R.id.listview_1)
         listView.setAdapter(adapter)
+        //Listenes to what button was clicked and gets the position
         listView.setOnItemClickListener{parent, view, position, id -> Long
             //AdapterView
             //val element = parent.getItemAtPosition(position) // The item that was clicked
             intent = Intent(this, SingleTodo::class.java)
 
+            //hakee datan ja lähettää sen SingleToDohon Activityn auetessa
             val singleToDo = lista[position]
             intent.putExtra("toDoList", singleToDo as Serializable)
 
