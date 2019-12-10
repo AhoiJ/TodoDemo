@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout for a single list item -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvJoinHeader"
+        android:layout_width="230dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:text="@string/join_req_tv"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnAcceptJoin"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_weight="1"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:background="@android:drawable/checkbox_on_background"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/btnDeclineJoin"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/btnAcceptJoin"
+        android:background="@android:drawable/ic_delete"
+        android:textSize="12sp" />
+
+</RelativeLayout>

@@ -20,6 +20,7 @@
     <string name="default_todo_title">Default Title</string>
     <string name="add_task_btn">Add Task</string>
     <string name="todo_title_tv">Add Title</string>
+    <string name="join_req_tv">Default</string>
 
     <!-- UserInfo -->
     <string name="user_email">Logged in as: </string>
