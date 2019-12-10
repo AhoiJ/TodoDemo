@@ -38,7 +38,6 @@ class AllOpenActivity : AppCompatActivity() {
     }
     // may get other uses later, dont delete yet
     private fun updateUI(currentUser: FirebaseUser?) {
-
         //  initToDo loads snapshot every time database for this user updates
         initToDoList()
     }
@@ -64,8 +63,6 @@ class AllOpenActivity : AppCompatActivity() {
 
     // Updates listview with items when change occurs
     private fun updateView(lista: MutableList<ToDoList>) {
-
-
         // pass list into custom adapter
         val adapter = ToDoAdapter(this, lista)
         val listView: ListView = findViewById(R.id.listview_1)
