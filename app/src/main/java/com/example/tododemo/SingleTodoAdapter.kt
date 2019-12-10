@@ -53,6 +53,11 @@ class SingleTodoAdapter(
 
         holder.subTask!!.setText(SingleTodo.singleTodo.tasks!![position])
 
+        if (SingleTodo.singleTodo.taskDone!!.get(position) == 1)
+            holder.taskDoneDid!!.isChecked = true
+        else
+            holder.taskDoneDid!!.isChecked = false
+
         holder.taskDoneDid!!.setTag(R.integer.taskDoneDidView, convertView)
         holder.taskDoneDid!!.setTag(R.integer.taskDoneDidPos, position)
 
@@ -63,9 +68,10 @@ class SingleTodoAdapter(
 
             if(SingleTodo.singleTodo.taskDone!!.get(pos) == 1){
                 SingleTodo.singleTodo.taskDone
+            } else
+                SingleTodo.singleTodo.taskDone!![pos] = 1
 
-            }
-
+            db.child("todos").child(SingleTodo.singleTodo.objId.toString()).setValue(SingleTodo.singleTodo)
         }
 
         return convertView!!

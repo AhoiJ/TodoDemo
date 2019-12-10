@@ -28,6 +28,11 @@ class SingleTodo : AppCompatActivity() {
         //items_list.setText(singleTodo.tasks)
     }
 
+    override fun finish() {
+        super.finish()
+        val intent = Intent(this, MenuActivity::class.java)
+        startActivity(intent)
+    }
 
     private fun populateList(singleTodo: ToDoList) {
         todoAdapter = SingleTodoAdapter(this, singleTodo)
@@ -38,4 +43,5 @@ class SingleTodo : AppCompatActivity() {
     companion object {
         lateinit var singleTodo: ToDoList
     }
+
 }
