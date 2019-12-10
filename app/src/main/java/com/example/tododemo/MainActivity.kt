@@ -41,12 +41,12 @@ class MainActivity : AppCompatActivity()  {
         db = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
         // initialize list to hold data that will be saved
-        var listTodo: List<String> = mutableListOf()
+        var listTodo: MutableList<String> = mutableListOf()
 
         btnAddTodo.setOnClickListener(View.OnClickListener {
             if (etTodoItem.text != null) {
                 val todo = etTodoItem.text.toString()
-                listTodo += todo
+                listTodo.add(todo)
                 updateList(listTodo)
                 etTodoItem.setText("")
             }
@@ -85,10 +85,10 @@ class MainActivity : AppCompatActivity()  {
         list.done = false
         list.startTime = Timestamp(System.currentTimeMillis()).toString()
         // adding a done list for each task
-        var tempArrayForCount: List<Int> = mutableListOf()
+        var tempArrayForCount: MutableList<Int> = mutableListOf()
         val add = 0
         for (i in listTodo)
-            tempArrayForCount += add
+            tempArrayForCount.add(add)
         list.taskDone = tempArrayForCount
         // user id as table identification
         val key = currentUser!!.uid

@@ -20,7 +20,7 @@ import com.google.firebase.database.*
 
 class SingleTodoAdapter(
     private val context: Context,
-    private val SingleItemList: MutableList<ToDoList>
+    private val SingleItemList: ToDoList
 ) : BaseAdapter() {
 
 
@@ -61,6 +61,10 @@ class SingleTodoAdapter(
             // get position from button
             val pos = holder.taskDoneDid!!.getTag(R.integer.taskDoneDidPos) as Int
 
+            if(SingleTodo.singleTodo.taskDone!!.get(pos) == 1){
+                SingleTodo.singleTodo.taskDone
+
+            }
 
         }
 
@@ -68,7 +72,7 @@ class SingleTodoAdapter(
     }
 
     override fun getItem(position: Int): Any {
-        return SingleItemList[position]
+        return SingleItemList.tasks!![position]
     }
 
     override fun getItemId(position: Int): Long {
@@ -76,7 +80,7 @@ class SingleTodoAdapter(
     }
 
     override fun getCount(): Int {
-        return SingleItemList.size
+        return SingleItemList.tasks!!.count()
     }
 
     private inner class ViewHolder {

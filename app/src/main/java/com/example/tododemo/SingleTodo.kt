@@ -8,10 +8,13 @@ import android.widget.ArrayAdapter
 import android.widget.ListAdapter
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_single_todo.*
 import java.io.Serializable
 
 class SingleTodo : AppCompatActivity() {
+
+    lateinit var todoAdapter: SingleTodoAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,20 +22,18 @@ class SingleTodo : AppCompatActivity() {
 
         //hakee tiedot AllOpenActivitysta
         singleTodo = intent.extras!!.get("toDoList") as ToDoList
-
-
-
+        populateList(singleTodo)
         //hakee titlen tekstimuodossa
         //textView.setText(singleTodo.title)
         //items_list.setText(singleTodo.tasks)
     }
 
-    /*
-    private fun addFriendsToList(friendList: List<String>) {
-        friendAdapter = FriendAdapter(this, friendList)
-        val listView: ListView = findViewById(R.id.lvCurrentFrd)
-        listView.setAdapter(friendAdapter)
-    }*/
+
+    private fun populateList(singleTodo: ToDoList) {
+        todoAdapter = SingleTodoAdapter(this, singleTodo)
+        val listView: ListView = findViewById(R.id.items_list)
+        listView.setAdapter(todoAdapter)
+    }
 
     companion object {
         lateinit var singleTodo: ToDoList
