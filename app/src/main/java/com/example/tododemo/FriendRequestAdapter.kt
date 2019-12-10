@@ -46,7 +46,7 @@ class FriendRequestAdapter(
         }
         db = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
-        val currentUser = auth.currentUser // null for some reason
+        val currentUser = auth.currentUser
 
         holder.listViewInvite!!.setText(AddContactActivity.friendRequestList.get(position).requesterEmail)
 
@@ -70,8 +70,12 @@ class FriendRequestAdapter(
             listOfFriends.addAll(AddContactActivity.friendList)
             // add the new friend from request
             listOfFriends.add(friendReq.requesterEmail.toString())
+            // init list that holds parsed list
+            var parsedList: MutableList<FriendRequest>
+            // parse list to contain what is seen on listView
+            parsedList = parseList(AddContactActivity.friendRequestList)
             // remove the request from DB
-            removeRequest(AddContactActivity.friendRequestList, pos)
+            removeRequest(parsedList, pos)
             // push new list of friends
             db.child("contacts/").child(currentUser!!.uid).child("friends").setValue(listOfFriends)
             // clear local list to avoid bugs
@@ -81,8 +85,12 @@ class FriendRequestAdapter(
         holder.btnDecline!!.setOnClickListener {
             // get position from button
             val pos = holder.btnDecline!!.getTag(R.integer.btnDeclinePos) as Int
-            // remove request that was declined
-            removeRequest(AddContactActivity.friendRequestList, pos)
+            // init list that holds parsed list
+            var parsedList: MutableList<FriendRequest>
+            // parse list to contain what is seen on listView
+            parsedList = parseList(AddContactActivity.friendRequestList)
+            // remove the request from DB
+            removeRequest(parsedList, pos)
 
         }
 
@@ -102,6 +110,18 @@ class FriendRequestAdapter(
             .removeValue()
 
 
+    }
+    fun parseList(requestList: MutableList<FriendRequest>): MutableList<FriendRequest>{
+        val currentUser = auth.currentUser
+        var userHasList: MutableList<FriendRequest> = mutableListOf()
+        var i : Int = 0
+        while(i < requestList.count()){
+            if (requestList[i].hopefulFriendEmail == currentUser!!.email.toString()) {
+                userHasList.add(requestList[i])
+            }
+            i++
+        }
+        return userHasList
     }
 
 
