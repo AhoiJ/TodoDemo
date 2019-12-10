@@ -86,7 +86,6 @@ class AllOpenActivity : AppCompatActivity() {
 
             startActivity(intent)
 
-            //lista[position - 1]
         }
         }
 

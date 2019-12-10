@@ -67,7 +67,7 @@ class SingleTodoAdapter(
             val pos = holder.taskDoneDid!!.getTag(R.integer.taskDoneDidPos) as Int
 
             if(SingleTodo.singleTodo.taskDone!!.get(pos) == 1){
-                SingleTodo.singleTodo.taskDone
+                SingleTodo.singleTodo.taskDone!![pos]=0
             } else
                 SingleTodo.singleTodo.taskDone!![pos] = 1
 
@@ -95,6 +95,5 @@ class SingleTodoAdapter(
         var subTask: TextView? = null
         //tarvitaan jos poisto ominaisuus lisätään
         //var deleteTask: ImageButton? = null
-
     }
 }
