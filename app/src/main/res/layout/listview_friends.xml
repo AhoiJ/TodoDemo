@@ -8,12 +8,23 @@
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:padding="16dp">
 
+    <Button
+        android:id="@+id/btnDeleteFriend"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:background="@android:drawable/ic_delete"
+        android:textSize="12sp" />
     <TextView
         android:id="@+id/list_friends"
         android:layout_width="230dp"
         android:layout_height="50dp"
+        android:paddingLeft="20dp"
         android:text="email@example.com"
         android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/btnDeleteFriend"
         android:textSize="18sp"
         android:textStyle="bold" />
 

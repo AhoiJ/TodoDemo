@@ -13,7 +13,7 @@ class FriendsActivity : AppCompatActivity() {
 
     private var listViewFriends: ListView? = null
     lateinit var friendAdapter: FriendAdapter
-    private var friends: MutableList<String> = mutableListOf()
+    //private var friendList: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,19 +25,20 @@ class FriendsActivity : AppCompatActivity() {
 
         // initialize listview for friends
         listViewFriends = findViewById(R.id.lvCurrentFrd) as ListView
+        // init list for friends
+        friendList = mutableListOf<String>()
         // initialize adapter for friends
-        friendAdapter = FriendAdapter(this, friends)
-        // init list for friendRequests
+        friendAdapter = FriendAdapter(this, friendList)
 
 
         val contactListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                friends.clear()
-                dataSnapshot.children.mapNotNullTo(friends) {
+                friendList.clear()
+                dataSnapshot.children.mapNotNullTo(friendList) {
                     it.getValue<String>(String::class.java)
                 }
 
-                addFriendsToList(friends)
+                addFriendsToList(friendList)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -46,7 +47,7 @@ class FriendsActivity : AppCompatActivity() {
         }
 
         db.child("contacts").child(currentUser.uid).child("friends")
-            .addListenerForSingleValueEvent(contactListener)
+            .addValueEventListener(contactListener)
 
     }
 
@@ -57,4 +58,9 @@ class FriendsActivity : AppCompatActivity() {
         listView.setAdapter(friendAdapter)
     }
 
+    companion object {
+        lateinit var friendList: MutableList<String>
+    }
+
 }
+
