@@ -65,7 +65,7 @@ class AddContactActivity : AppCompatActivity() {
             if (etFriendRequestEmail.text != null) {
                 var i = 0
                 var isAlreadyFriend: Boolean = false
-                while (i <= friendList.count()) {
+                while (i < friendList.count()) {
                     if (friendList.count() == 0) {
                         if (friendRequestList.count() != 0) {
                             if (friendRequestList[i].hopefulFriendEmail == etFriendRequestEmail.text.toString())
@@ -131,14 +131,14 @@ class AddContactActivity : AppCompatActivity() {
         // counters for while statements
         var i = 0
         // while i is less than lista size
-        while (i < lista.count()) {
-
-            if (lista[i].hopefulFriendEmail == currentUser!!.email.toString()) {
-                userHasList.add(lista[i])
+        if(!lista.isEmpty()) {
+            while (i < lista.count()) {
+                if (lista[i].hopefulFriendEmail == currentUser!!.email.toString()) {
+                    userHasList.add(lista[i])
+                }
+                i++
             }
-            i++
         }
-
         addRequestsToList(userHasList)
     }
 

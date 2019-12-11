@@ -1,6 +1,8 @@
 package com.example.tododemo
 
-class ToDoList {
+import java.io.Serializable
+
+class ToDoList : Serializable {
     companion object Factory{
         fun create(): ToDoList = ToDoList()
     }
