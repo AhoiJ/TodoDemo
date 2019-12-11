@@ -74,13 +74,18 @@ class FriendRequestAdapter(
             var parsedList: MutableList<FriendRequest>
             // parse list to contain what is seen on listView
             parsedList = parseList(AddContactActivity.friendRequestList)
+            /*
             // remove the request from DB
             removeRequest(parsedList, pos)
+             */
+            // Set friendRequest accepted value to true
+            setAccepted(parsedList, pos)
             // push new list of friends
             db.child("contacts/").child(currentUser!!.uid).child("friends").setValue(listOfFriends)
             // clear local list to avoid bugs
             listOfFriends.clear()
         }
+
         // listener for decline button
         holder.btnDecline!!.setOnClickListener {
             // get position from button
@@ -98,6 +103,19 @@ class FriendRequestAdapter(
 
     }
 
+    fun setAccepted(
+        requestList: MutableList<FriendRequest>,
+        position: Int
+    ) {
+
+        db = FirebaseDatabase.getInstance().reference
+        // removes the object where request was stored from database
+        db.child("friendRequests").child(requestList[position].objId.toString()).child("accepted")
+            .setValue(true)
+
+    }
+
+
     // function to remove accepted request from list
     fun removeRequest(
         requestList: MutableList<FriendRequest>,
@@ -111,11 +129,12 @@ class FriendRequestAdapter(
 
 
     }
-    fun parseList(requestList: MutableList<FriendRequest>): MutableList<FriendRequest>{
+
+    fun parseList(requestList: MutableList<FriendRequest>): MutableList<FriendRequest> {
         val currentUser = auth.currentUser
         var userHasList: MutableList<FriendRequest> = mutableListOf()
-        var i : Int = 0
-        while(i < requestList.count()){
+        var i: Int = 0
+        while (i < requestList.count()) {
             if (requestList[i].hopefulFriendEmail == currentUser!!.email.toString()) {
                 userHasList.add(requestList[i])
             }

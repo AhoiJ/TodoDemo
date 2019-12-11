@@ -65,7 +65,7 @@ class AddContactActivity : AppCompatActivity() {
             if (etFriendRequestEmail.text != null) {
                 var i = 0
                 var isAlreadyFriend: Boolean = false
-                while (i < friendList.count()) {
+                while (i < friendList.count() || i == 0) {
                     if (friendList.count() == 0) {
                         if (friendRequestList.count() != 0) {
                             if (friendRequestList[i].hopefulFriendEmail == etFriendRequestEmail.text.toString())
@@ -109,6 +109,7 @@ class AddContactActivity : AppCompatActivity() {
                 }
                 // parses list to contain only those for this user
                 userHasAccessToRequests(friendRequestList)
+                addAcceptedRequests(friendRequestList)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -121,6 +122,31 @@ class AddContactActivity : AppCompatActivity() {
     }
 
 
+    private fun addAcceptedRequests(lista: MutableList<FriendRequest>) {
+        // get users instance
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+
+        var userHasList: MutableList<FriendRequest> = mutableListOf()
+        // counters for while statements
+        var i = 0
+        var friendEmailAsList : MutableList<String?> = mutableListOf()
+        if (!lista.isEmpty()) {
+            while (i < lista.count()) {
+                if (lista[i].requesterEmail == currentUser!!.email.toString()) {
+                    if (lista[i].accepted == true) {
+                        friendEmailAsList!!.add(lista[i].hopefulFriendEmail)
+                        db.child("contacts/").child(currentUser!!.uid).child("friends")
+                            .setValue(friendEmailAsList) // this needs to be a list
+                        db.child("friendRequests").child(lista[i].objId.toString())
+                            .removeValue()
+                    }
+                }
+                i++
+            }
+        }
+    }
+
     // checks if user is the receiver on list and collects a list for displaying
     private fun userHasAccessToRequests(lista: MutableList<FriendRequest>) {
         // get users instance
@@ -131,7 +157,7 @@ class AddContactActivity : AppCompatActivity() {
         // counters for while statements
         var i = 0
         // while i is less than lista size
-        if(!lista.isEmpty()) {
+        if (!lista.isEmpty()) {
             while (i < lista.count()) {
                 if (lista[i].hopefulFriendEmail == currentUser!!.email.toString()) {
                     userHasList.add(lista[i])
