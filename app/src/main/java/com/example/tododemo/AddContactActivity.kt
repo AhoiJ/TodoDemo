@@ -130,7 +130,7 @@ class AddContactActivity : AppCompatActivity() {
         var userHasList: MutableList<FriendRequest> = mutableListOf()
         // counters for while statements
         var i = 0
-        var friendEmailAsList : MutableList<String?> = mutableListOf()
+        var friendEmailAsList: MutableList<String?> = mutableListOf()
         if (!lista.isEmpty()) {
             while (i < lista.count()) {
                 if (lista[i].requesterEmail == currentUser!!.email.toString()) {
@@ -160,7 +160,8 @@ class AddContactActivity : AppCompatActivity() {
         if (!lista.isEmpty()) {
             while (i < lista.count()) {
                 if (lista[i].hopefulFriendEmail == currentUser!!.email.toString()) {
-                    userHasList.add(lista[i])
+                    if (lista[i].accepted == false)
+                        userHasList.add(lista[i])
                 }
                 i++
             }
