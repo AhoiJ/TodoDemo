@@ -26,28 +26,30 @@ class JoinActivity : AppCompatActivity() {
 
         //init joinRequest List
         joinRequests = mutableListOf()
-       // stringListReq = mutableListOf()
-
-
 
         // gets joinRequestList from DB
         val joinListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-              /*  joinRequests.clear() // clear list so there are no local duplicates
-                dataSnapshot.children.mapNotNullTo(joinRequests) {
+               joinRequests.clear() // clear list so there are no local duplicates
+              /*  dataSnapshot.children.mapNotNullTo(joinRequests) {
                     it.getValue<JoinRequest>(JoinRequest::class.java)
                 }
 
                */
+
+
+
                 var children = dataSnapshot.children
                 getDtSnap(children)
+
+
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 println("loadPost:onCancelled ${databaseError.toException()}")
             }
         }
-        db.child("joinRequests").child("").child("")
+        db.child("joinRequests")
             .addValueEventListener(joinListener)
 
 
@@ -59,7 +61,21 @@ class JoinActivity : AppCompatActivity() {
                 it.getValue<JoinRequest>(JoinRequest::class.java)
             }
         }
-        addRequestsToList(joinRequests)
+        accessCheck(joinRequests)
+    }
+    private fun accessCheck(requests: MutableList<JoinRequest>){
+        // user auth
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser!!
+        // init list to hold requests for this user
+        var checkedRequests : MutableList<JoinRequest> = mutableListOf()
+
+        for (item in requests){
+            if(item.receiverEmail == currentUser.email){
+                checkedRequests.add(item)
+            }
+        }
+        addRequestsToList(checkedRequests)
     }
     private fun addRequestsToList(requests: MutableList<JoinRequest>){
         //initialize adapter

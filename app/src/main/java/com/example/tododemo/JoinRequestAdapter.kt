@@ -14,7 +14,7 @@ import com.google.firebase.database.FirebaseDatabase
 
 class JoinRequestAdapter(
     private val context: Context,
-    private val joinRequest: MutableList<JoinRequest>
+    private val singleRequest: MutableList<JoinRequest>
 ) : BaseAdapter() {
 
 
@@ -45,7 +45,7 @@ class JoinRequestAdapter(
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser // null for some reason
 
-        holder.requestObjId!!.setText(JoinActivity.joinRequests[position].todoTitle)
+        holder.requestObjId!!.setText(singleRequest[position].todoTitle)
 
 
         holder.acceptRequest!!.setTag(R.integer.btnAcceptView, convertView)
@@ -59,7 +59,7 @@ class JoinRequestAdapter(
     }
 
     override fun getItem(position: Int): Any {
-        return joinRequest[position]
+        return singleRequest[position]
     }
 
     override fun getItemId(position: Int): Long {
@@ -67,7 +67,7 @@ class JoinRequestAdapter(
     }
 
     override fun getCount(): Int {
-        return joinRequest.count()
+        return singleRequest.count()
     }
 
     private inner class ViewHolder {
