@@ -112,7 +112,7 @@ class AddContactActivity : AppCompatActivity() {
             }
         })
 
-        // gets snapshot of DB data
+        // gets snapshot of DB data for requests
         val requestListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 friendRequestList.clear()
@@ -204,7 +204,6 @@ class AddContactActivity : AppCompatActivity() {
     }
 
     companion object {
-        // lateinit var friendRequestList: ArrayList<FriendRequest>
         lateinit var friendRequestList: MutableList<FriendRequest>
         lateinit var friendList: MutableList<String>
     }

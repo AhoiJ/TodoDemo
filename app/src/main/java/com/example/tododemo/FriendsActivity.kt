@@ -27,10 +27,12 @@ class FriendsActivity : AppCompatActivity() {
         listViewFriends = findViewById(R.id.lvCurrentFrd) as ListView
         // init list for friends
         friendList = mutableListOf<String>()
+        // init list for friendRequests
+        friendRequestList = mutableListOf<FriendRequest>()
         // initialize adapter for friends
         friendAdapter = FriendAdapter(this, friendList)
 
-
+        // gets list of friends
         val contactListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 friendList.clear()
@@ -49,8 +51,51 @@ class FriendsActivity : AppCompatActivity() {
         db.child("contacts").child(currentUser.uid).child("friends")
             .addValueEventListener(contactListener)
 
+        // gets snapshot of DB data
+        val requestListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                AddContactActivity.friendRequestList.clear()
+                dataSnapshot.children.mapNotNullTo(friendRequestList) {
+                    it.getValue<FriendRequest>(FriendRequest::class.java)
+                }
+                // add accepted requests to friends
+                addAcceptedRequests(FriendsActivity.friendRequestList)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("loadPost:onCancelled ${databaseError.toException()}")
+            }
+        }
+        db.child("friendRequests").addValueEventListener(requestListener)
+
+
+
     }
 
+    private fun addAcceptedRequests(lista: MutableList<FriendRequest>) {
+        // get users instance
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+
+        var userHasList: MutableList<FriendRequest> = mutableListOf()
+        // counters for while statements
+        var i = 0
+        var friendEmailAsList: MutableList<String?> = mutableListOf()
+        if (!lista.isEmpty()) {
+            while (i < lista.count()) {
+                if (lista[i].requesterEmail == currentUser!!.email.toString()) {
+                    if (lista[i].accepted == true) {
+                        friendEmailAsList!!.add(lista[i].hopefulFriendEmail)
+                        db.child("contacts/").child(currentUser!!.uid).child("friends")
+                            .setValue(friendEmailAsList) // this needs to be a list
+                        db.child("friendRequests").child(lista[i].objId.toString())
+                            .removeValue()
+                    }
+                }
+                i++
+            }
+        }
+    }
 
     private fun addFriendsToList(friendList: List<String>) {
         friendAdapter = FriendAdapter(this, friendList)
@@ -60,6 +105,7 @@ class FriendsActivity : AppCompatActivity() {
 
     companion object {
         lateinit var friendList: MutableList<String>
+        lateinit var friendRequestList: MutableList<FriendRequest>
     }
 
 }
