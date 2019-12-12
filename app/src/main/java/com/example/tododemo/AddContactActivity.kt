@@ -64,16 +64,28 @@ class AddContactActivity : AppCompatActivity() {
         btnSendFriendRequest.setOnClickListener(View.OnClickListener {
             if (etFriendRequestEmail.text != null) {
                 var i = 0
+                var ifNonZeroFriendAlreadyExists: Int = 0
                 var isAlreadyFriend: Boolean = false
                 while (i < friendList.count() || i == 0) {
-                    if (friendList.count() == 0) {
-                        if (friendRequestList.count() != 0) {
-                            if (friendRequestList[i].hopefulFriendEmail == etFriendRequestEmail.text.toString())
-                                isAlreadyFriend = true
+                    if (friendList.count() != 0) {
+                        if (friendList[i] == etFriendRequestEmail.text.toString()) {
+                            ifNonZeroFriendAlreadyExists++
                         }
-                    } else if (friendList[i] == etFriendRequestEmail.text.toString() || friendRequestList[i].hopefulFriendEmail == etFriendRequestEmail.text.toString())
-                        isAlreadyFriend = true
+                    }
                     i++
+                }
+                i = 0
+                while (i < friendRequestList.count() || i == 0) {
+                    if (friendRequestList.count() != 0) {
+                        if (friendRequestList[i].hopefulFriendEmail == etFriendRequestEmail.text.toString() && friendRequestList[i].requesterEmail == currentUser.email) {
+                            ifNonZeroFriendAlreadyExists++
+                        }
+                    }
+                    i++
+                }
+
+                if (ifNonZeroFriendAlreadyExists != 0) {
+                    isAlreadyFriend = true
                 }
                 if (isAlreadyFriend == false) {
                     sendFriendRequest(currentUser)
