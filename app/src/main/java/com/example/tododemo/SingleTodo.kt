@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
+import androidx.core.view.isNotEmpty
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -19,10 +20,14 @@ class SingleTodo : AppCompatActivity() {
 
     lateinit var todoAdapter: SingleTodoAdapter
 
+    override fun onStart() {
+        super.onStart()
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_todo)
-
 
         db = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
@@ -34,12 +39,36 @@ class SingleTodo : AppCompatActivity() {
         //hakee titlen tekstimuodossa
         textTitle.setText(singleTodo.title)
         // initialize friendList
-        var friendList: MutableList<String> = mutableListOf()
-        // initialize spinner
-        var friendSpinner: Spinner = findViewById(R.id.friendSpinner)
-        var spinnerArrayAdapter: ArrayAdapter<String> =
-            ArrayAdapter(this, android.R.layout.simple_spinner_item, friendList)
+        friendList = mutableListOf()
 
+
+        // listener for spinner
+        friendSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                Toast.makeText(
+                    applicationContext,
+                    "fail",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+                if (friendSpinner.isNotEmpty()) {
+                    if (parent.getItemAtPosition(position).equals("Select a friend to invite")) {
+                        // do nothing, this is default value
+                    } else {
+                        var selected = parent.getItemAtPosition(position).toString()
+
+                        db.child("joinRequests").child(singleTodo.objId.toString()).setValue(selected)
+                    }
+                }
+            }
+        }
 
         // updates friendList
         val ctListener = object : ValueEventListener {
@@ -48,6 +77,7 @@ class SingleTodo : AppCompatActivity() {
                 dataSnapshot.children.mapNotNullTo(friendList) {
                     it.getValue<String>(String::class.java)
                 }
+                initSpinner(friendList)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -56,7 +86,7 @@ class SingleTodo : AppCompatActivity() {
         }
 
         db.child("contacts").child(currentUser!!.uid).child("friends")
-            .addValueEventListener(ctListener)
+            .addListenerForSingleValueEvent(ctListener)
 
     }
 
@@ -64,6 +94,16 @@ class SingleTodo : AppCompatActivity() {
         super.finish()
         val intent = Intent(this, MenuActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun initSpinner(friendList: MutableList<String>) {
+        // add a default text as first item
+        friendList.add(0, "Select a friend to invite")
+        // initialize spinner
+        var spinnerArrayAdapter: ArrayAdapter<String> =
+            ArrayAdapter(this, android.R.layout.simple_spinner_item, friendList)
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
+        friendSpinner.adapter = spinnerArrayAdapter
     }
 
     private fun populateList(singleTodo: ToDoList) {
@@ -74,6 +114,8 @@ class SingleTodo : AppCompatActivity() {
 
     companion object {
         lateinit var singleTodo: ToDoList
+        lateinit var friendList: MutableList<String>
+        lateinit var joinRequestList: MutableList<String>
     }
 
 }
