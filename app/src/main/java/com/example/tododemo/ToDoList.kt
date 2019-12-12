@@ -11,7 +11,7 @@ class ToDoList : Serializable {
     var memberId: List<String>? = null
     var title: String? = null
     var tasks: List<String>? = null
-    var taskDone: List<Int>? = null
+    var taskDone: MutableList<Int>? = null
     var done: Boolean? = false
     var startTime: String? = null
 

@@ -38,8 +38,6 @@ class ToDoAdapter(private val context: Context, private val dataSource: List<ToD
         titleTextView.text = task.title
         startTimeTextView.text = task.startTime.toString()
 
-
-
         return rowView
     }
 }
