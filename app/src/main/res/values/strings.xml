@@ -20,6 +20,7 @@
     <string name="publish_btn">Publish</string>
     <string name="add_todo_btn">Add ToDo</string>
     <string name="invite_friend_btn">Invite Friend</string>
+    <string name="delete_todo_btn">Delete Todo</string>
 
     <!-- Miscs -->
     <string name="default_todo_title">Default Title</string>

@@ -19,7 +19,15 @@
         android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:weightSum="2"
-        android:gravity = "center">
+        >
+
+        <Button
+            android:id="@+id/btnDeleteTodo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/button"
+            android:text="@string/delete_todo_btn" />
 
         <TextView
             android:id="@+id/textTitle"
@@ -28,7 +36,8 @@
             android:layout_height="wrap_content"
             android:text="@string/placeholder"
             android:textSize="24sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:gravity = "center"/>
 
 
     </LinearLayout>

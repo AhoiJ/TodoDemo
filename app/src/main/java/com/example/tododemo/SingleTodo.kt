@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import android.widget.AdapterView.INVISIBLE
 import android.widget.AdapterView.OnItemClickListener
 import androidx.core.view.isNotEmpty
 import com.google.firebase.auth.FirebaseAuth
@@ -42,6 +43,19 @@ class SingleTodo : AppCompatActivity() {
         friendList = mutableListOf()
         // initialize joinRequestList
         joinRequestList = mutableListOf()
+
+        //set delete button to be invisible if user is not creator
+        if(currentUser.uid != singleTodo.creatorId){
+            btnDeleteTodo.visibility = View.INVISIBLE
+        }
+        //delete button listener
+        btnDeleteTodo.setOnClickListener(View.OnClickListener {
+            if(currentUser.uid == singleTodo.creatorId){
+                db.child("todos/").child(singleTodo.objId.toString()).removeValue()
+                db.child("joinRequests").child(singleTodo.objId.toString()).removeValue()
+                finish()
+            }
+        })
 
         // listener for spinner
         friendSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -133,13 +147,18 @@ class SingleTodo : AppCompatActivity() {
     }
 
     private fun initSpinner(friendList: MutableList<String>) {
+        //init user stuff
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser!!
         // add a default text as first item
         friendList.add(0, "Select a friend to invite")
-        // initialize spinner
-        var spinnerArrayAdapter: ArrayAdapter<String> =
-            ArrayAdapter(this, android.R.layout.simple_spinner_item, friendList)
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
-        friendSpinner.adapter = spinnerArrayAdapter
+        if(currentUser.uid == singleTodo.creatorId) {
+            // initialize spinner
+            var spinnerArrayAdapter: ArrayAdapter<String> =
+                ArrayAdapter(this, android.R.layout.simple_spinner_item, friendList)
+            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
+            friendSpinner.adapter = spinnerArrayAdapter
+        }
     }
 
     private fun populateList(singleTodo: ToDoList) {
