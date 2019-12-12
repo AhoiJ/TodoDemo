@@ -21,12 +21,16 @@
     <string name="add_todo_btn">Add ToDo</string>
     <string name="invite_friend_btn">Invite Friend</string>
     <string name="delete_todo_btn">Delete Todo</string>
+    <string name="view_requests_btn">Requests</string>
+    <string name="view_friends_btn">Friends</string>
+
 
     <!-- Miscs -->
     <string name="default_todo_title">Default Title</string>
     <string name="add_task_btn">Add Task</string>
     <string name="todo_title_tv">Add Title</string>
     <string name="placeholder">Placeholder</string>
+    <string name="join_req_tv">Default</string>
 
 
     <!-- UserInfo -->

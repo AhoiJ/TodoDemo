@@ -12,8 +12,6 @@ class JoinActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     lateinit var db: DatabaseReference
 
-    private var toDo: MutableList<ToDoList> = mutableListOf()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

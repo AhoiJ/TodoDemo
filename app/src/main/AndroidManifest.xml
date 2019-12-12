@@ -13,7 +13,10 @@
         android:theme="@style/AppTheme">
         <activity android:name=".SingleTodoAdapter" />
         <activity android:name=".SingleTodo" />
-        <activity android:name=".AllOpenActivity" />
+
+        <activity android:name=".ContactsMenuActivity"/>
+        <activity android:name=".FriendsActivity" />
+       <activity android:name=".AllOpenActivity" />
         <activity android:name=".AddContactActivity" />
         <activity android:name=".MenuActivity" />
         <activity android:name=".JoinActivity" />

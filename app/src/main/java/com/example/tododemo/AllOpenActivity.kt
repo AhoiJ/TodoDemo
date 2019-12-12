@@ -43,7 +43,6 @@ class AllOpenActivity : AppCompatActivity() {
 
     // may get other uses later, don't delete yet
     private fun updateUI(currentUser: FirebaseUser?) {
-
         //  initToDo loads snapshot every time database for this user updates
         initToDoList()
     }
