@@ -73,7 +73,7 @@ class AllOpenActivity : AppCompatActivity() {
         val adapter = ToDoAdapter(this, lista)
         val listView: ListView = findViewById(R.id.listview_1)
         listView.setAdapter(adapter)
-        //Listenes to what button was clicked and gets the position
+        //Listens to what button was clicked and gets the position
         listView.setOnItemClickListener { parent, view, position, id ->
             Long
             //AdapterView

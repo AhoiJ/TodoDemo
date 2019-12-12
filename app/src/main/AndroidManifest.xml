@@ -14,20 +14,28 @@
         <activity android:name=".SingleTodoAdapter" />
         <activity android:name=".SingleTodo" />
 
-        <activity android:name=".ContactsMenuActivity"/>
-        <activity android:name=".FriendsActivity" />
-       <activity android:name=".AllOpenActivity" />
-        <activity android:name=".AddContactActivity" />
-        <activity android:name=".MenuActivity" />
-        <activity android:name=".JoinActivity" />
-        <activity android:name=".SignInActivity">
+        <activity android:name=".ContactsMenuActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".FriendsActivity"
+            android:screenOrientation="portrait"/>
+       <activity android:name=".AllOpenActivity"
+           android:screenOrientation="portrait"/>
+        <activity android:name=".AddContactActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MenuActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".JoinActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SignInActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>

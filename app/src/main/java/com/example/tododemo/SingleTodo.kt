@@ -80,14 +80,17 @@ class SingleTodo : AppCompatActivity() {
                         var isRequestLive = false
                         val selected = parent.getItemAtPosition(position).toString()
                         for (item in joinRequestList) {
-                            if (item.toString() == selected) {
+                            if (item.receiverEmail == selected) {
                                 isRequestLive = true
                             }
                         }
                         // if request has not been sent to selected person
                         if (!isRequestLive) {
-                            joinRequestList.add(selected)
-                            db.child("joinRequests").child(singleTodo.objId.toString())
+                            var tempJoinReq : JoinRequest = JoinRequest()
+                            tempJoinReq.receiverEmail = selected
+                            tempJoinReq.todoTitle = singleTodo.title
+                            joinRequestList.add(tempJoinReq)
+                            db.child("joinRequests").child(singleTodo.title.toString())
                                 .setValue(joinRequestList)
                             Toast.makeText(
                                 applicationContext,
@@ -119,7 +122,7 @@ class SingleTodo : AppCompatActivity() {
             }
         }
 
-        db.child("contacts").child(currentUser!!.uid).child("friends")
+        db.child("contacts").child(currentUser.uid).child("friends")
             .addListenerForSingleValueEvent(ctListener)
 
         // gets joinRequestList so it can be referenced later
@@ -127,7 +130,7 @@ class SingleTodo : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 joinRequestList.clear() // clear list so there are no local duplicates
                 dataSnapshot.children.mapNotNullTo(SingleTodo.joinRequestList) {
-                    it.getValue<String>(String::class.java)
+                    it.getValue<JoinRequest>(JoinRequest::class.java)
                 }
             }
 
@@ -170,7 +173,7 @@ class SingleTodo : AppCompatActivity() {
     companion object {
         lateinit var singleTodo: ToDoList
         lateinit var friendList: MutableList<String>
-        lateinit var joinRequestList: MutableList<String>
+        lateinit var joinRequestList: MutableList<JoinRequest>
     }
 
 }
