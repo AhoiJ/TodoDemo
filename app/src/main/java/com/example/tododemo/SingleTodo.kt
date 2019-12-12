@@ -40,7 +40,8 @@ class SingleTodo : AppCompatActivity() {
         textTitle.setText(singleTodo.title)
         // initialize friendList
         friendList = mutableListOf()
-
+        // initialize joinRequestList
+        joinRequestList = mutableListOf()
 
         // listener for spinner
         friendSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -62,9 +63,28 @@ class SingleTodo : AppCompatActivity() {
                     if (parent.getItemAtPosition(position).equals("Select a friend to invite")) {
                         // do nothing, this is default value
                     } else {
-                        var selected = parent.getItemAtPosition(position).toString()
-
-                        db.child("joinRequests").child(singleTodo.objId.toString()).setValue(selected)
+                        var isRequestLive = false
+                        val selected = parent.getItemAtPosition(position).toString()
+                        for (item in joinRequestList) {
+                            if (item.toString() == selected) {
+                                isRequestLive = true
+                            }
+                        }
+                        // if request has not been sent to selected person
+                        if (!isRequestLive) {
+                            joinRequestList.add(selected)
+                            db.child("joinRequests").child(singleTodo.objId.toString())
+                                .setValue(joinRequestList)
+                            Toast.makeText(
+                                applicationContext,
+                                "Request sent",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else Toast.makeText(
+                            applicationContext,
+                            "That Person already has a join request",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
@@ -87,6 +107,22 @@ class SingleTodo : AppCompatActivity() {
 
         db.child("contacts").child(currentUser!!.uid).child("friends")
             .addListenerForSingleValueEvent(ctListener)
+
+        // gets joinRequestList so it can be referenced later
+        val joinListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                joinRequestList.clear() // clear list so there are no local duplicates
+                dataSnapshot.children.mapNotNullTo(SingleTodo.joinRequestList) {
+                    it.getValue<String>(String::class.java)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("loadPost:onCancelled ${databaseError.toException()}")
+            }
+        }
+        db.child("joinRequests").child(singleTodo.objId.toString())
+            .addValueEventListener(joinListener)
 
     }
 
