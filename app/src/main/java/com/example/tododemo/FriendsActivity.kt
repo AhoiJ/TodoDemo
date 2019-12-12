@@ -108,5 +108,11 @@ class FriendsActivity : AppCompatActivity() {
         lateinit var friendRequestList: MutableList<FriendRequest>
     }
 
+    override fun finish() {
+        super.finish()
+        friendList.clear()
+        friendRequestList.clear()
+    }
+
 }
 

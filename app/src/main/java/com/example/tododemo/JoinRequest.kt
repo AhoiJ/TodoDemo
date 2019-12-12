@@ -8,4 +8,5 @@ class JoinRequest: Serializable {
     }
     var todoTitle:  String? = null
     var receiverEmail: String? = null
+    var todoObjId: String? = null
 }

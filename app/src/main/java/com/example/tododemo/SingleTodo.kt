@@ -45,12 +45,12 @@ class SingleTodo : AppCompatActivity() {
         joinRequestList = mutableListOf()
 
         //set delete button to be invisible if user is not creator
-        if(currentUser.uid != singleTodo.creatorId){
+        if (currentUser.uid != singleTodo.creatorId) {
             btnDeleteTodo.visibility = View.INVISIBLE
         }
         //delete button listener
         btnDeleteTodo.setOnClickListener(View.OnClickListener {
-            if(currentUser.uid == singleTodo.creatorId){
+            if (currentUser.uid == singleTodo.creatorId) {
                 db.child("todos/").child(singleTodo.objId.toString()).removeValue()
                 db.child("joinRequests").child(singleTodo.objId.toString()).removeValue()
                 finish()
@@ -86,11 +86,12 @@ class SingleTodo : AppCompatActivity() {
                         }
                         // if request has not been sent to selected person
                         if (!isRequestLive) {
-                            var tempJoinReq : JoinRequest = JoinRequest()
+                            var tempJoinReq: JoinRequest = JoinRequest()
                             tempJoinReq.receiverEmail = selected
                             tempJoinReq.todoTitle = singleTodo.title
+                            tempJoinReq.todoObjId = singleTodo.objId
                             joinRequestList.add(tempJoinReq)
-                            db.child("joinRequests").child(singleTodo.title.toString())
+                            db.child("joinRequests").child(singleTodo.objId.toString())
                                 .setValue(joinRequestList)
                             Toast.makeText(
                                 applicationContext,
@@ -145,6 +146,9 @@ class SingleTodo : AppCompatActivity() {
 
     override fun finish() {
         super.finish()
+        friendList.clear()
+        singleTodo = ToDoList()
+        joinRequestList.clear()
         val intent = Intent(this, MenuActivity::class.java)
         startActivity(intent)
     }
@@ -155,7 +159,7 @@ class SingleTodo : AppCompatActivity() {
         val currentUser = auth.currentUser!!
         // add a default text as first item
         friendList.add(0, "Select a friend to invite")
-        if(currentUser.uid == singleTodo.creatorId) {
+        if (currentUser.uid == singleTodo.creatorId) {
             // initialize spinner
             var spinnerArrayAdapter: ArrayAdapter<String> =
                 ArrayAdapter(this, android.R.layout.simple_spinner_item, friendList)

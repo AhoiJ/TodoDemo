@@ -26,18 +26,30 @@ class JoinActivity : AppCompatActivity() {
 
         //init joinRequest List
         joinRequests = mutableListOf()
+        // init for todos
+        toDoForCheck = mutableListOf()
+
+        // gets snapshot of DB data
+        val todoListener = object : ValueEventListener {
+            // refuses to work unless using mutableList<ToDoList>
+            override fun onDataChange(dt: DataSnapshot) {
+                dt.children.mapNotNullTo(toDoForCheck) {
+                    it.getValue<ToDoList>(ToDoList::class.java)
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("loadPost:onCancelled ${databaseError.toException()}")
+            }
+        }
+        db.child("todos/").addListenerForSingleValueEvent(todoListener)
+
 
         // gets joinRequestList from DB
         val joinListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                joinRequests.clear() // clear list so there are no local duplicates
-              /*  dataSnapshot.children.mapNotNullTo(joinRequests) {
-                    it.getValue<JoinRequest>(JoinRequest::class.java)
-                }
-
-               */
-
-
 
                 var children = dataSnapshot.children
                 getDtSnap(children)
@@ -85,6 +97,11 @@ class JoinActivity : AppCompatActivity() {
 
     companion object {
         lateinit var joinRequests: MutableList<JoinRequest>
-       // lateinit var stringListReq: MutableList<String>
+        lateinit var toDoForCheck: MutableList<ToDoList>
+    }
+    override fun finish() {
+        super.finish()
+        joinRequests.clear()
+        toDoForCheck.clear()
     }
 }

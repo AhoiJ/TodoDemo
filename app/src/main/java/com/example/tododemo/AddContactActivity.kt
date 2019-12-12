@@ -208,4 +208,9 @@ class AddContactActivity : AppCompatActivity() {
         lateinit var friendList: MutableList<String>
     }
 
+    override fun finish() {
+        super.finish()
+        friendList.clear()
+        friendRequestList.clear()
+    }
 }

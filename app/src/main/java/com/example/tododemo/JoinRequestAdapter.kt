@@ -4,10 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.TextView
+import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -33,9 +30,9 @@ class JoinRequestAdapter(
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertView = inflater.inflate(R.layout.item_join, null, true)
 
-            holder.requestObjId = convertView.findViewById(R.id.tvJoinHeader) as TextView
+            holder.requestTitle = convertView.findViewById(R.id.tvJoinHeader) as TextView
             holder.acceptRequest = convertView.findViewById(R.id.btnAcceptJoin) as Button
-            holder.declineRequest =  convertView.findViewById(R.id.btnDeclineJoin) as Button
+            holder.declineRequest = convertView.findViewById(R.id.btnDeclineJoin) as Button
 
             convertView.tag = holder
         } else {
@@ -45,18 +42,48 @@ class JoinRequestAdapter(
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser // null for some reason
 
-        holder.requestObjId!!.setText(singleRequest[position].todoTitle)
+        holder.requestTitle!!.setText(singleRequest[position].todoTitle)
 
 
         holder.acceptRequest!!.setTag(R.integer.btnAcceptView, convertView)
         holder.acceptRequest!!.setTag(R.integer.btnAcceptPos, position)
         holder.declineRequest!!.setTag(R.integer.btnDeclineView, convertView)
-        holder.declineRequest!!.setTag(R.integer.btnDeclinePos , position)
+        holder.declineRequest!!.setTag(R.integer.btnDeclinePos, position)
 
+        holder.acceptRequest!!.setOnClickListener {
+            // get position from button, this may be error cause integer file is used in 2 adapters
+            val pos = holder.acceptRequest!!.getTag(R.integer.btnAcceptPos) as Int
+            // get request at position
+            var temp = singleRequest.get(pos)
+            // init list to hold all members
+            var membersList: MutableList<String> = mutableListOf()
+            // use requests objId to get members
+            membersList.clear()
+            membersList = getMembers(temp)
+            membersList.add(currentUser!!.uid)
+
+
+            db.child("todos/").child(temp.todoObjId.toString()).child("memberId")
+                .setValue(membersList)
+            membersList.clear()
+        }
 
 
         return convertView!!
     }
+
+
+    private fun getMembers(temp: JoinRequest): MutableList<String> {
+        var membersList: MutableList<String> = mutableListOf()
+        for (item in JoinActivity.toDoForCheck) {
+            if (item.objId == temp.todoObjId) {
+                membersList.add(item.memberId.toString())
+            }
+
+        }
+        return membersList
+    }
+
 
     override fun getItem(position: Int): Any {
         return singleRequest[position]
@@ -74,7 +101,7 @@ class JoinRequestAdapter(
 
         var acceptRequest: Button? = null
         var declineRequest: Button? = null
-        var requestObjId: TextView? = null
+        var requestTitle: TextView? = null
 
     }
 }
