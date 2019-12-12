@@ -13,10 +13,10 @@
     <!-- create a Linear Layout with horizontal orientation and weightSum property -->
 
     <LinearLayout
-        android:id="@+id/firstLayout"
+        android:id="@+id/titleLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:weightSum="2"
         android:gravity = "center">
@@ -26,29 +26,33 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MAIN TODO TITLE"
+            android:text="@string/placeholder"
             android:textSize="24sp"
             android:textStyle="bold"/>
-
-        <Button
-            android:id="@+id/buttonInvite"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15sp"
-            android:layout_marginRight="2sp"
-            android:layout_weight="1"
-            android:text="Invite friend" />
 
 
     </LinearLayout>
 
-    <!-- create a Linear Layout with horizontal orientation and weightSum property -->
 
     <LinearLayout
-        android:id="@+id/secondLayout"
+        android:id="@+id/contactLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/firstLayout"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/titleLayout">
+
+        <Spinner
+            android:id="@+id/friendSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/listLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/contactLayout"
         android:layout_marginTop="20dp"
         android:orientation="horizontal"
         android:weightSum="2">
@@ -65,3 +69,18 @@
     </LinearLayout>
 
 </RelativeLayout>
+
+
+    <!--
+            <Button
+                android:id="@+id/buttonInvite"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15sp"
+                android:layout_marginStart="15sp"
+                android:layout_marginRight="2sp"
+                android:layout_marginEnd="2sp"
+                android:background="@drawable/button"
+                android:layout_weight="1"
+                android:text="@string/invite_friend_btn" />
+    -->

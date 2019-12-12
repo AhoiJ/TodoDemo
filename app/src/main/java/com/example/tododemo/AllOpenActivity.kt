@@ -40,6 +40,7 @@ class AllOpenActivity : AppCompatActivity() {
         // OnCreate currently needed only to start activity
         // used when implementing opening to-dos activity
     }
+
     // may get other uses later, don't delete yet
     private fun updateUI(currentUser: FirebaseUser?) {
 
@@ -69,13 +70,13 @@ class AllOpenActivity : AppCompatActivity() {
     // Updates listview with items when change occurs
     private fun updateView(lista: MutableList<ToDoList>) {
 
-
         // pass list into custom adapter
         val adapter = ToDoAdapter(this, lista)
         val listView: ListView = findViewById(R.id.listview_1)
         listView.setAdapter(adapter)
         //Listenes to what button was clicked and gets the position
-        listView.setOnItemClickListener{parent, view, position, id -> Long
+        listView.setOnItemClickListener { parent, view, position, id ->
+            Long
             //AdapterView
             //val element = parent.getItemAtPosition(position) // The item that was clicked
             intent = Intent(this, SingleTodo::class.java)
@@ -85,9 +86,11 @@ class AllOpenActivity : AppCompatActivity() {
             intent.putExtra("toDoList", singleToDo as Serializable)
 
             startActivity(intent)
+            // deletes instance from stack to disable users ability to come back to this view using back button
+            finish()
 
         }
-        }
+    }
 
     // checks if user is on a to-dos member list and collects a list for displaying
     private fun userHasAccess(lista: MutableList<ToDoList>) {
@@ -120,6 +123,6 @@ class AllOpenActivity : AppCompatActivity() {
             updateView(userHasList)
 
 
-        }
+    }
 
 }
