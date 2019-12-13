@@ -60,6 +60,14 @@ class JoinRequestAdapter(
             // use requests objId to get members
             membersList.clear()
             membersList = getMembers(temp)
+            var i = 0
+            for (members in membersList) {
+                var tempString = members
+                var newString = tempString.replace("[", "")
+                tempString = newString.replace("]", "")
+                membersList[i] = tempString
+                i++
+            }
             membersList.add(currentUser!!.uid)
 
 
