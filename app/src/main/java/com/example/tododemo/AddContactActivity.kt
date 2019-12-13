@@ -37,7 +37,7 @@ class AddContactActivity : AppCompatActivity() {
         requestAdapter = FriendRequestAdapter(this, reqItemList)
         // set friendRequestAdapter for listViewItems
         listViewItems!!.setAdapter(requestAdapter)
-        friendRequestList = mutableListOf<FriendRequest>()
+        AddContactActivity.friendRequestList = mutableListOf()
         friendList = mutableListOf<String>()
 
         // updates friendList when user accepts request

@@ -54,7 +54,7 @@ class FriendsActivity : AppCompatActivity() {
         // gets snapshot of DB data
         val requestListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                AddContactActivity.friendRequestList.clear()
+                FriendsActivity.friendRequestList.clear()
                 dataSnapshot.children.mapNotNullTo(friendRequestList) {
                     it.getValue<FriendRequest>(FriendRequest::class.java)
                 }
