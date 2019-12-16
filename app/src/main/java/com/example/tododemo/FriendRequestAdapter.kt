@@ -74,14 +74,11 @@ class FriendRequestAdapter(
             var parsedList: MutableList<FriendRequest>
             // parse list to contain what is seen on listView
             parsedList = parseList(AddContactActivity.friendRequestList)
-            /*
-            // remove the request from DB
-            removeRequest(parsedList, pos)
-             */
+
             // Set friendRequest accepted value to true
             setAccepted(parsedList, pos)
             // push new list of friends
-            db.child("contacts/").child(currentUser!!.uid).child("friends").setValue(listOfFriends)
+            db.child("contacts/").child(currentUser!!.uid).child("friends").setValue(parsedList)
             // clear local list to avoid bugs
             listOfFriends.clear()
         }
