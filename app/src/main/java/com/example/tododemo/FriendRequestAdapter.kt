@@ -78,7 +78,7 @@ class FriendRequestAdapter(
             // Set friendRequest accepted value to true
             setAccepted(parsedList, pos)
             // push new list of friends
-            db.child("contacts/").child(currentUser!!.uid).child("friends").setValue(parsedList)
+            db.child("contacts/").child(currentUser!!.uid).child("friends").setValue(listOfFriends) //?????
             // clear local list to avoid bugs
             listOfFriends.clear()
         }

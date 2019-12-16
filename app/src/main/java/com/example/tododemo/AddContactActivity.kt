@@ -139,17 +139,17 @@ class AddContactActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
 
-        var userHasList: MutableList<FriendRequest> = mutableListOf()
         // counters for while statements
         var i = 0
         var friendEmailAsList: MutableList<String?> = mutableListOf()
+        friendEmailAsList.addAll(friendList)
         if (!lista.isEmpty()) {
             while (i < lista.count()) {
                 if (lista[i].requesterEmail == currentUser!!.email.toString()) {
                     if (lista[i].accepted == true) {
                         friendEmailAsList!!.add(lista[i].hopefulFriendEmail)
                         db.child("contacts/").child(currentUser!!.uid).child("friends")
-                            .setValue(friendEmailAsList) // this needs to be a list
+                            .setValue(friendEmailAsList)
                         db.child("friendRequests").child(lista[i].objId.toString())
                             .removeValue()
                     }
