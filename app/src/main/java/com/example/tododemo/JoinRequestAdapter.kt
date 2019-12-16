@@ -49,7 +49,7 @@ class JoinRequestAdapter(
         holder.acceptRequest!!.setTag(R.integer.btnAcceptPos, position)
         holder.declineRequest!!.setTag(R.integer.btnDeclineView, convertView)
         holder.declineRequest!!.setTag(R.integer.btnDeclinePos, position)
-
+        // onClickListener for accept button
         holder.acceptRequest!!.setOnClickListener {
             // get position from button, this may be error cause integer file is used in 2 adapters
             val pos = holder.acceptRequest!!.getTag(R.integer.btnAcceptPos) as Int
@@ -69,11 +69,19 @@ class JoinRequestAdapter(
                 i++
             }
             membersList.add(currentUser!!.uid)
-
+            // remove request from db
+            removeRequest(singleRequest, pos)
 
             db.child("todos/").child(temp.todoObjId.toString()).child("memberId")
                 .setValue(membersList)
             membersList.clear()
+        }
+
+        // onClickListener for decline button
+        holder.declineRequest!!.setOnClickListener{
+            val pos = holder.declineRequest!!.getTag(R.integer.btnDeclinePos) as Int
+
+            removeRequest(singleRequest, pos)
         }
 
 
@@ -91,6 +99,21 @@ class JoinRequestAdapter(
         }
         return membersList
     }
+
+    // function to remove accepted request from list
+    fun removeRequest(
+        requestList: MutableList<JoinRequest>,
+        position: Int
+    ) {
+
+        db = FirebaseDatabase.getInstance().reference
+        // removes the object where request was stored from database
+        db.child("joinRequests").child(requestList[position].todoObjId.toString())
+            .removeValue()
+
+
+    }
+
 
 
     override fun getItem(position: Int): Any {
